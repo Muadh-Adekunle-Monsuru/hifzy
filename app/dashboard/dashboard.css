@@ -1,0 +1,24 @@
+.bento-card {
+    border: 2px solid #737373;
+    transition: border-color 0.2s ease;
+}
+.bento-card:hover {
+    border-color: #FFFFFF;
+}
+.heatmap-cell {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #353534;
+}
+.heatmap-cell.active-1 { background-color: #2a2a2a; }
+.heatmap-cell.active-2 { background-color: #474747; }
+.heatmap-cell.active-3 { background-color: #8e9192; }
+.heatmap-cell.active-4 { background-color: #ffffff; }
+
+/* Celestial Doodles Background */
+.sky-doodle {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.15;
+    z-index: 0;
+}

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import "./dashboard.css";
 
 import { DashboardHeader } from "./_components/DashboardHeader";
@@ -15,14 +15,22 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      router.push("/login");
+      router.replace("/login");
+      return;
     }
+
+    setAuthorized(true);
   }, [router]);
+
+  if (!authorized) {
+    return null;
+  }
 
   return (
     <div className="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary min-h-screen">

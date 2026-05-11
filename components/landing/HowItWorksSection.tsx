@@ -63,7 +63,8 @@ export function HowItWorksSection() {
             Self Perfect
           </h4>
           <p className="font-body-md text-body-md text-on-surface-variant">
-            Compare your audio with the Sheikh and grade your memory difficulty.
+            Compare your audio with the reciter and grade your memory
+            difficulty.
           </p>
         </MotionDiv>
       </MotionDiv>

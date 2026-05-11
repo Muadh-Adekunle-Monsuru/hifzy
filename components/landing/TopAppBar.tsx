@@ -1,10 +1,13 @@
-import { UserCircle } from "lucide-react";
-import React from "react";
-import { MotionDiv } from "../ui/Motion";
+"use client";
 import { fadeUp } from "@/lib/motion";
 import Link from "next/link";
+import { MotionDiv } from "../ui/Motion";
+import LoginDialog from "./LoginDialog";
+import { getToken } from "@/lib/utils/auth";
+import LogoutButton from "./LogoutButton";
 
 export function TopAppBar() {
+  const token = getToken();
   return (
     <MotionDiv
       initial="hidden"
@@ -17,8 +20,8 @@ export function TopAppBar() {
       >
         <Link href="/">Al-Hifz</Link>
       </MotionDiv>
-      <MotionDiv variants={fadeUp} className="flex items-center gap-sm">
-        <UserCircle className="size-8" />
+      <MotionDiv variants={fadeUp} className="">
+        {token ? <LogoutButton /> : <LoginDialog />}
       </MotionDiv>
     </MotionDiv>
   );

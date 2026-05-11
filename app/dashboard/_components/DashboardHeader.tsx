@@ -1,8 +1,33 @@
+"use client";
 import { MotionDiv } from "@/components/ui/Motion";
 import { fadeUp } from "@/lib/motion";
-import React from "react";
+import { getToken } from "@/lib/utils/auth";
+import { useEffect, useState } from "react";
 
 export function DashboardHeader() {
+  const [firstName, setFirst] = useState("");
+  useEffect(() => {
+    const token = getToken();
+    const getUser = async () => {
+      const response = await fetch(
+        "https://quran-be-59779bf2.fastapicloud.dev/auth/me",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (response.ok) {
+        const { data } = await response.json();
+        setFirst(data.user.given_name || data.user.username || "There");
+      }
+    };
+
+    getUser();
+  }, []);
   return (
     <MotionDiv
       initial="hidden"
@@ -14,7 +39,7 @@ export function DashboardHeader() {
           BISMILLAHIR RAHMANIR RAHIM
         </p>
         <h2 className="font-display-lg text-display-lg tracking-tighter">
-          Ahlan, Hafiz.
+          Ahlan, {firstName} 👋.
         </h2>
       </MotionDiv>
       <MotionDiv

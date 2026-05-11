@@ -1,26 +1,20 @@
 import type { Metadata, Viewport } from "next";
 
+import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
-import { Navigation } from "@/components/navigation";
-import {
-  Geist,
-  Geist_Mono,
-  Geist as V0_Font_Geist,
-  Geist_Mono as V0_Font_Geist_Mono,
-  Source_Serif_4 as V0_Font_Source_Serif_4,
-} from "next/font/google";
 
 // Initialize fonts
-const _geist = V0_Font_Geist({
+const geist = Geist({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-const _geistMono = V0_Font_Geist_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-const _sourceSerif_4 = V0_Font_Source_Serif_4({
+const sourceSerif_4 = Source_Serif_4({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
@@ -67,9 +61,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className="font-sans antialiased bg-white text-gray-900">
-        <div className="min-h-screen flex flex-col">{children}</div>
+      <body
+        className={`font-sans antialiased bg-white text-gray-900  ${geist.className}`}
+      >
+        {children}
         {process.env.NODE_ENV === "production" && <Analytics />}
+        <Toaster position="top-center" />
       </body>
     </html>
   );

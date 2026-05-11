@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import "./dashboard.css";
 
@@ -9,8 +10,20 @@ import { RetentionStats } from "./_components/RetentionStats";
 import { DailyTip } from "./_components/DailyTip";
 import { TopAppBar } from "@/components/landing/TopAppBar";
 import { Footer } from "@/components/landing/Footer";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
+
   return (
     <div className="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary min-h-screen">
       <TopAppBar />

@@ -27,6 +27,7 @@ export default function RangeDialog() {
 
   const [startPage, setStartPage] = useState(1);
   const [endPage, setEndPage] = useState(604);
+  const [reciter, setReciter] = useState(6);
 
   // Derived Data
   const currentStartSurahData = surahDetail.find((s) => s.id === startSurah);
@@ -97,7 +98,7 @@ export default function RangeDialog() {
                   </button>
                   <button
                     onClick={() => setMode("page")}
-                    className={`flex-1 py-xs font-label-caps text-label-caps transition-colors ${
+                    className={`disabled:opacity-50 disabled:cursor-not-allowed flex-1 py-xs font-label-caps text-label-caps transition-colors ${
                       mode === "page"
                         ? "bg-primary text-on-primary"
                         : "text-secondary hover:text-primary"
@@ -249,11 +250,13 @@ export default function RangeDialog() {
                 <label className="font-label-caps text-label-caps text-outline">
                   SELECT RECITER
                 </label>
-                <select className="border-b border-primary bg-surface-container-lowest focus:border-b-[3px] focus:outline-none outline-none ring-0 py-xs text-primary font-body-md appearance-none w-full cursor-pointer">
-                  <option>Mishary Rashid Alafasy</option>
-                  <option>Abdul Rahman Al-Sudais</option>
-                  <option>Saud Al-Shuraim</option>
-                  <option>Yasser Al-Dosari</option>
+                <select
+                  value={reciter}
+                  onChange={(e) => setReciter(Number(e.target.value))}
+                  className="border-b border-primary bg-surface-container-lowest focus:border-b-[3px] focus:outline-none outline-none ring-0 py-xs text-primary font-body-md appearance-none w-full cursor-pointer"
+                >
+                  <option value={6}>Mahmoud Khalil Al-Husary</option>
+                  <option value={7}>Abdul Rahman Al-Sudais</option>
                 </select>
               </div>
 
@@ -264,14 +267,20 @@ export default function RangeDialog() {
                       const db = await initDatabase();
                       await db.write(async () => {
                         await db.get<Range>("range").create((record) => {
-                          record.startSurahNumber = startSurah;
-                          record.startSurahName =
-                            currentStartSurahData?.transliteration || "";
-                          record.startAyahNumber = startVerse;
-                          record.endSurahNumber = endSurah;
-                          record.endSurahName =
-                            currentEndSurahData?.transliteration || "";
-                          record.endAyahNumber = endVerse;
+                          if (mode === "surah") {
+                            record.startSurahNumber = startSurah;
+                            record.startSurahName =
+                              currentStartSurahData?.transliteration || "";
+                            record.startAyahNumber = startVerse;
+                            record.endSurahNumber = endSurah;
+                            record.endSurahName =
+                              currentEndSurahData?.transliteration || "";
+                            record.endAyahNumber = endVerse;
+                          } else if (mode === "page") {
+                            record.startPage = startPage;
+                            record.endPage = endPage;
+                          }
+                          record.reciter = reciter;
                         });
                       });
                       console.log("Range saved successfully");

@@ -12,6 +12,7 @@ import { TopAppBar } from "@/components/landing/TopAppBar";
 import { Footer } from "@/components/landing/Footer";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -29,7 +30,11 @@ export default function DashboardPage() {
   }, [router]);
 
   if (!authorized) {
-    return null;
+    return (
+      <div className="bg-background h-screen flex flex-col items-center justify-center">
+        <Loader className="animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -51,9 +56,9 @@ export default function DashboardPage() {
 
           {/* Bento Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+            <RecentRanges />
             <MasteryHeatmap />
             <CurrentStreak />
-            <RecentRanges />
             <RetentionStats />
             <DailyTip />
           </div>

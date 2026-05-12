@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 export function DashboardHeader() {
   const [firstName, setFirst] = useState("");
   useEffect(() => {
-    const token = getToken();
+    const token = localStorage.getItem("token");
     const getUser = async () => {
       const response = await fetch(
         "https://quran-be-59779bf2.fastapicloud.dev/auth/me",
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -21,8 +21,9 @@ export function DashboardHeader() {
       );
 
       if (response.ok) {
-        const { data } = await response.json();
-        setFirst(data.user.given_name || data.user.username || "There");
+        const data = await response.json();
+        console.log(data);
+        setFirst(data?.username[0]);
       }
     };
 
@@ -39,27 +40,13 @@ export function DashboardHeader() {
           BISMILLAHIR RAHMANIR RAHIM
         </p>
         <h2 className="font-display-lg text-display-lg tracking-tighter">
-          Ahlan, {firstName} 👋.
+          Ahlan, {firstName.toUpperCase()} 👋
         </h2>
       </MotionDiv>
-      <MotionDiv
-        variants={fadeUp}
-        className="flex items-center gap-sm bg-surface-container-low p-sm border border-outline-variant"
-      >
-        <div className="flex flex-col">
-          <span className="font-label-caps text-label-caps text-outline">
-            SYNC STATUS
-          </span>
-          <span className="font-headline-md text-headline-md-mobile text-primary">
-            Offline Ready
-          </span>
-        </div>
-        <span
-          className="material-symbols-outlined text-primary"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          cloud_done
-        </span>
+      <MotionDiv variants={fadeUp} className="">
+        <button className="mt-md w-fit bg-primary text-on-primary px-lg py-xs font-bold active:scale-95 transition-all">
+          RESUME SESSION
+        </button>
       </MotionDiv>
     </MotionDiv>
   );

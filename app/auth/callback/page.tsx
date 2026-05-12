@@ -28,7 +28,7 @@ function CallbackContent() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ code }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -37,9 +37,7 @@ function CallbackContent() {
 
         const data = await response.json();
 
-        console.log(data);
-
-        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("token", data.token);
 
         router.push("/dashboard");
       } catch (error) {

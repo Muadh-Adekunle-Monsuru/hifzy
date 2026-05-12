@@ -5,9 +5,17 @@ import { MotionDiv } from "../ui/Motion";
 import LoginDialog from "./LoginDialog";
 import { getToken } from "@/lib/utils/auth";
 import LogoutButton from "./LogoutButton";
+import { useEffect, useState } from "react";
 
 export function TopAppBar() {
-  const token = getToken();
+  const [token, setToken] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    setToken(getToken());
+  }, []);
+
   return (
     <MotionDiv
       initial="hidden"
@@ -21,7 +29,7 @@ export function TopAppBar() {
         <Link href="/">Al-Hifz</Link>
       </MotionDiv>
       <MotionDiv variants={fadeUp} className="">
-        {token ? <LogoutButton /> : <LoginDialog />}
+        {!isMounted ? null : token ? <LogoutButton /> : <LoginDialog />}
       </MotionDiv>
     </MotionDiv>
   );

@@ -23,7 +23,7 @@ export default function LoginDialog() {
       "https://quran-be-59779bf2.fastapicloud.dev/auth/login";
   };
   return (
-    <div className="w-full">
+    <div className="">
       <Dialog>
         <DialogTrigger>
           <Tooltip>
@@ -35,7 +35,7 @@ export default function LoginDialog() {
             </TooltipContent>
           </Tooltip>
         </DialogTrigger>
-        <DialogContent className="w-fit min-w-[32rem]">
+        <DialogContent className=" min-w-[25rem]">
           <DialogHeader>
             <DialogTitle className="text-white text-2xl">
               Sign in with Quran.com

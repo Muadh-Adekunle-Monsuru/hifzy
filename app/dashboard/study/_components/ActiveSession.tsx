@@ -1,13 +1,27 @@
-import { SessionCard } from "./types";
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/hooks/useSpacedRepetition";
+import { ChevronLeft, Mic, MicVocal } from "lucide-react";
+import { useRouter } from "next/navigation";
+import FrontAudioTogglePlayer from "./FrontAudioPlay";
+import AllAudioPlayer from "./AllAudioPlayer";
+import { AnimatePresence, motion, Variants } from "framer-motion";
+import { useState } from "react";
 
 interface ActiveSessionProps {
   currentCardIndex: number;
   cardsDue: number;
-  currentCard: SessionCard;
+  currentCard: Card;
   showAnswer: boolean;
   setShowAnswer: (show: boolean) => void;
   handleGrade: (quality: number) => void;
 }
+
+const softFade: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2, ease: "easeOut" } },
+};
 
 export function ActiveSession({
   currentCardIndex,
@@ -17,151 +31,203 @@ export function ActiveSession({
   setShowAnswer,
   handleGrade,
 }: ActiveSessionProps) {
+  const router = useRouter();
+  const [playmode, setPlayMode] = useState("");
+
+  const togglePlayMode = (value: string) => {
+    setPlayMode(value);
+  };
   return (
-    <>
-      {/* Progress Bar Section */}
-      <div className="w-full max-w-3xl mb-gap-xl">
-        <div className="flex justify-between items-end mb-gap-xs">
-          <span className="font-label-caps text-label-caps text-secondary uppercase">
-            Session Progress
-          </span>
-          <span className="font-label-caps text-label-caps text-primary">
-            {currentCardIndex + 1} / {cardsDue} Ayahs
+    <div className="flex flex-col gap-5 md:w-5xl mx-auto py-20">
+      <Button
+        variant={"outline"}
+        className="w-fit mb-5"
+        onClick={() => {
+          router.push("/dashboard");
+        }}
+      >
+        <ChevronLeft /> Dashboard
+      </Button>
+
+      {/* Progress Section */}
+      <div className="w-full">
+        <div className="flex justify-between items-end mb-2">
+          <span className="uppercase">Session Progress</span>
+          <span className="font-label-caps text-primary">
+            {currentCardIndex + 1} / {cardsDue} Cards
           </span>
         </div>
-        <div className="h-2 w-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+        {/* Progress Bar using your variable colors */}
+        <div className="h-2 w-full bg-white/10 border border-border overflow-hidden rounded-full">
           <div
-            className="h-full bg-primary transition-all duration-300"
+            className="h-full bg-primary transition-all duration-300 shadow-[0_0_10px_rgba(255,255,255,0.5)]"
             style={{
               width: `${((currentCardIndex + 1) / cardsDue) * 100}%`,
-              boxShadow: "0 0 10px rgba(255,255,255,0.5)",
             }}
           ></div>
         </div>
       </div>
 
-      {/* The Revision Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-gap-gutter w-full max-w-5xl">
-        {/* Context Cell */}
-        <div className="md:col-span-12 lg:col-span-3 bento-cell p-gap-md bg-surface-container-low relative overflow-hidden flex flex-col justify-between order-2 lg:order-1">
-          <div className="relative z-10">
-            <p className="font-label-caps text-label-caps text-secondary mb-gap-xs">
-              SURAH
-            </p>
-            <h2 className="font-headline-md text-headline-md text-primary mb-md">
-              {currentCard.verse.surahName}
-            </h2>
-            <div className="h-px bg-outline-variant w-full mb-md"></div>
-            <p className="font-label-caps text-label-caps text-secondary mb-gap-xs">
-              AYAH
-            </p>
-            <h3 className="font-headline-md text-headline-md text-primary">
-              {currentCard.verse.ayahNumber}
-            </h3>
-          </div>
-          {/* Decorative Moon */}
-          <div className="absolute -bottom-4 -right-4 opacity-20 transform rotate-12">
-            <span
-              className="material-symbols-outlined text-[120px]"
-              style={{ fontVariationSettings: "'FILL' 0" }}
-            >
-              brightness_3
-            </span>
-          </div>
-        </div>
-
+      <div className="w-full flex flex-col gap-3">
         {/* Prompt Ayah Cell */}
-        <div className="md:col-span-12 lg:col-span-9 bento-cell p-gap-xl bg-surface-container relative overflow-hidden flex flex-col items-center justify-center order-1 lg:order-2">
-          <div className="absolute top-gap-md right-gap-md">
-            <span className="font-label-caps text-label-caps text-outline-variant">
-              Prompt
-            </span>
-          </div>
-          <div className="text-center w-full">
+        <div className="w-full bento-cell p-3 px-10 bg-card overflow-hidden flex flex-col items-center justify-center gap-3">
+          <span className="font-label-caps text-muted-foreground uppercase">
+            Front Card
+          </span>
+          <div className=" w-full">
             <p
-              className="font-arabic-primary text-[48px] text-primary arabic-glow leading-loose mb-lg"
+              className="quran-container text-5xl md:text-3xl arabic-glow text-justify text-primary"
               dir="rtl"
+              lang="ar"
             >
-              {currentCard.verse.arabicText}
+              {currentCard.arabicText}
             </p>
-            {showAnswer && (
-              <div className="mt-gap-md mb-gap-md text-secondary">
-                <p className="italic mb-2">{currentCard.verse.transliteration}</p>
-                <p className="text-sm">{currentCard.verse.translation}</p>
-              </div>
-            )}
-            <div className="flex items-center justify-center gap-gap-md">
-              <button className="w-12 h-12 border-2 border-primary flex items-center justify-center hover:bg-primary hover:text-background transition-colors group">
-                <span className="material-symbols-outlined group-active:scale-90">
-                  play_arrow
-                </span>
-              </button>
-              <span className="font-label-caps text-label-caps text-secondary">
-                Recitation
-              </span>
-            </div>
           </div>
+          <FrontAudioTogglePlayer audioUrl={currentCard.audioUrl} />
         </div>
 
-        {/* Recording Interaction Cell */}
-        <div className="md:col-span-12 bento-cell p-gap-lg bg-background flex flex-col items-center justify-center gap-gap-md order-3">
-          <div className="flex flex-col items-center gap-gap-sm">
-            <div className="relative flex items-center justify-center">
-              {/* Pulse Rings */}
-              <div className="absolute w-24 h-24 border border-primary rounded-full animate-ping opacity-20"></div>
-              <div className="absolute w-32 h-32 border border-primary rounded-full animate-ping opacity-10"></div>
-              <button className="w-20 h-20 bg-primary text-background rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-transform relative z-10">
-                <span
-                  className="material-symbols-outlined text-[40px]"
-                  style={{ fontVariationSettings: "'FILL' 1" }}
+        <div className="transition-all duration-300 ease-in-out">
+          <AnimatePresence mode="wait">
+            {!showAnswer ? (
+              <motion.div
+                key="recording-section"
+                variants={softFade}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="flex flex-col gap-6"
+              >
+                <div className="md:col-span-12 bento-cell p-8 bg-background flex flex-col items-center justify-center gap-6">
+                  {/* Recording Interaction Cell */}
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="relative flex items-center justify-center">
+                      <motion.button
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="w-20 h-20 bg-primary text-background rounded-full flex items-center justify-center relative z-10 shadow-lg"
+                      >
+                        <span
+                          className="material-symbols-outlined text-4xl"
+                          style={{ fontVariationSettings: "'FILL' 1" }}
+                        >
+                          mic
+                        </span>
+                      </motion.button>
+                    </div>
+                    <p className="font-label-caps text-primary tracking-widest mt-2">
+                      TAP TO RECORD RESPONSE
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      Recite the next three verses from memory
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowAnswer(true)}
+                  className="md:col-span-12 w-full py-4 border-2 border-primary bg-primary text-background font-bold uppercase tracking-widest hover:bg-transparent hover:text-primary transition-all active:scale-[0.98]"
                 >
-                  mic
-                </span>
-              </button>
-            </div>
-            <p className="font-label-caps text-label-caps text-primary tracking-widest mt-gap-sm">
-              TAP TO RECORD RESPONSE
-            </p>
-            <p className="text-secondary text-sm font-body-md opacity-60">
-              Recite the verse from memory
-            </p>
-          </div>
-        </div>
+                  Reveal Answer
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="answer-section"
+                variants={softFade}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="flex flex-col gap-3"
+              >
+                <div className="w-full bento-cell p-3 px-10 bg-card overflow-hidden flex flex-col items-center justify-center gap-3">
+                  <span className="font-label-caps text-muted-foreground uppercase">
+                    Back Card
+                  </span>
+                  <div className="w-full">
+                    {JSON.parse(currentCard.answerVerses).map(
+                      (verse: any, index: number) => (
+                        <p
+                          key={index}
+                          className="quran-container text-5xl md:text-3xl arabic-glow text-justify text-primary py-2 border-b border-secondary"
+                          dir="rtl"
+                          lang="ar"
+                        >
+                          {verse.arabic_text}
+                        </p>
+                      ),
+                    )}
+                  </div>
+                </div>
 
-        {/* Main Action Button */}
-        <div className="md:col-span-12 mt-gap-md order-4">
-          {!showAnswer ? (
-            <button
-              onClick={() => setShowAnswer(true)}
-              className="w-full py-gap-md border-2 border-primary bg-primary text-background font-headline-md uppercase tracking-tighter hover:bg-background hover:text-primary transition-all active:scale-[0.98]"
-            >
-              Reveal Answer
-            </button>
-          ) : (
-            <div className="flex flex-col gap-gap-sm">
-              <p className="text-center font-label-caps text-primary mb-2">HOW WELL DID YOU DO?</p>
-              <div className="grid grid-cols-2 md:grid-cols-6 gap-gap-sm w-full">
-                {[
-                  { value: 0, label: "Blackout", color: "hover:bg-red-900/50 border-red-900" },
-                  { value: 1, label: "Difficult", color: "hover:bg-orange-900/50 border-orange-900" },
-                  { value: 2, label: "Hard", color: "hover:bg-yellow-900/50 border-yellow-900" },
-                  { value: 3, label: "Good", color: "hover:bg-blue-900/50 border-blue-900" },
-                  { value: 4, label: "Easy", color: "hover:bg-green-900/50 border-green-900" },
-                  { value: 5, label: "Perfect", color: "hover:bg-emerald-900/50 border-emerald-900" },
-                ].map((grade) => (
-                  <button
-                    key={grade.value}
-                    onClick={() => handleGrade(grade.value)}
-                    className={`py-gap-sm border-2 transition-colors flex flex-col items-center justify-center bento-cell ${grade.color}`}
-                  >
-                    <span className="font-label-caps">{grade.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+                <div className="w-full">
+                  <div className="grid grid-cols-12 gap-3 w-full">
+                    <div className="col-span-12  md:col-span-4 bento-cell p-5">
+                      <p className="text-center mb-2 font-medium text-muted-foreground uppercase font-mono">
+                        Audio Comparision
+                      </p>
+                      <div className="flex justify-around gap-5 border-t border-white/20 pt-5">
+                        <div
+                          onClick={() => setPlayMode("my-audio")}
+                          className={`size-32 border p-5 flex flex-col items-center justify-center hover:bg-primary hover:text-black transition-all duration-200 ease-in-out cursor-pointer`}
+                        >
+                          <Mic className="size-5" />
+                          <p className="mt-2 text-xs text-center font-mono uppercase">
+                            Listen to me
+                          </p>
+                        </div>
+                        <AllAudioPlayer
+                          answerVerses={currentCard.answerVerses}
+                          isSelected={playmode === "reciter-audio"}
+                          togglePlayMode={togglePlayMode}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-12 md:col-span-8 flex flex-col gap-4 bento-cell p-5">
+                      <p className="text-center mb-2 font-medium text-muted-foreground uppercase font-mono border-b border-white/20 pb-2">
+                        HOW WELL DID YOU DO?
+                      </p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full">
+                        {[
+                          {
+                            value: 0,
+                            label: "Hard (Again)",
+                            color: "hover:bg-yellow-900/50 border-yellow-900",
+                          },
+                          {
+                            value: 2,
+                            label: "Good",
+                            color: "hover:bg-blue-900/50 border-blue-900",
+                          },
+                          {
+                            value: 4,
+                            label: "Easy",
+                            color: "hover:bg-green-900/50 border-green-900",
+                          },
+                          {
+                            value: 5,
+                            label: "Perfect",
+                            color: "hover:bg-emerald-900/50 border-emerald-900",
+                          },
+                        ].map((grade) => (
+                          <button
+                            key={grade.value}
+                            onClick={() => handleGrade(grade.value)}
+                            className={`aspect-square  py-3 border-2 flex flex-col items-center justify-center   hover:bg-white/80 hover:text-black transition-all duration-200 ease-in-out`}
+                          >
+                            <span className="font-label-caps text-sm">
+                              {grade.label}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-    </>
+    </div>
   );
 }

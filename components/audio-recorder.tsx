@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { AudioRecorder } from '@/lib/audio/recorder';
-import { AudioComparison, type ComparisonResult } from '@/lib/audio/comparison';
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { AudioRecorder } from "@/lib/audio/recorder";
+import { AudioComparison, type ComparisonResult } from "@/lib/audio/comparison";
 
 interface AudioRecorderProps {
   onRecordingComplete?: (data: {
@@ -72,7 +72,7 @@ export function AudioRecorderComponent({
       setRecordingDuration(0);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to start recording'
+        err instanceof Error ? err.message : "Failed to start recording",
       );
       setIsRecording(false);
     }
@@ -91,16 +91,15 @@ export function AudioRecorderComponent({
       if (showComparison && referenceAudioUrl) {
         try {
           const referenceBlob = await fetch(referenceAudioUrl).then((r) =>
-            r.blob()
+            r.blob(),
           );
           const userAnalysis = await AudioComparison.analyzeAudio(data.blob);
-          const referenceAnalysis = await AudioComparison.analyzeAudio(
-            referenceBlob
-          );
+          const referenceAnalysis =
+            await AudioComparison.analyzeAudio(referenceBlob);
 
           const result = AudioComparison.compareAudio(
             referenceAnalysis,
-            userAnalysis
+            userAnalysis,
           );
           setComparisonResult(result);
 
@@ -110,16 +109,14 @@ export function AudioRecorderComponent({
             accuracy: result.overallAccuracy,
           });
         } catch (compareErr) {
-          console.error('[v0] Comparison failed:', compareErr);
+          console.error("Comparison failed:", compareErr);
           onRecordingComplete?.(data);
         }
       } else {
         onRecordingComplete?.(data);
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to stop recording'
-      );
+      setError(err instanceof Error ? err.message : "Failed to stop recording");
       setIsRecording(true);
     }
   }, [showComparison, referenceAudioUrl, onRecordingComplete]);
@@ -127,7 +124,7 @@ export function AudioRecorderComponent({
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = (seconds % 60).toFixed(1);
-    return `${mins}:${parseFloat(secs) < 10 ? '0' : ''}${secs}`;
+    return `${mins}:${parseFloat(secs) < 10 ? "0" : ""}${secs}`;
   };
 
   const playRecording = useCallback(async () => {
@@ -153,7 +150,7 @@ export function AudioRecorderComponent({
         };
       }
     } catch (err) {
-      setError('Failed to play recording');
+      setError("Failed to play recording");
     }
   }, [recordedAudio, isPlaying]);
 
@@ -171,7 +168,9 @@ export function AudioRecorderComponent({
       {/* Recording Controls */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900">Record Your Recitation</h3>
+          <h3 className="font-semibold text-gray-900">
+            Record Your Recitation
+          </h3>
           {isRecording && (
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
@@ -214,7 +213,7 @@ export function AudioRecorderComponent({
                 variant="outline"
                 disabled={isRecording}
               >
-                {isPlaying ? 'Pause' : 'Play'} Recording
+                {isPlaying ? "Pause" : "Play"} Recording
               </Button>
               <Button
                 onClick={clearRecording}
@@ -232,12 +231,12 @@ export function AudioRecorderComponent({
       {recordedAudio && (
         <div className="bg-blue-50 border border-blue-200 rounded p-4 space-y-2">
           <p className="text-sm text-gray-700">
-            <span className="font-semibold">Duration:</span>{' '}
+            <span className="font-semibold">Duration:</span>{" "}
             {formatDuration(recordedAudio.duration)}
           </p>
           {recordedAudio.blob.size > 0 && (
             <p className="text-sm text-gray-700">
-              <span className="font-semibold">Size:</span>{' '}
+              <span className="font-semibold">Size:</span>{" "}
               {(recordedAudio.blob.size / 1024).toFixed(1)} KB
             </p>
           )}
@@ -258,7 +257,7 @@ export function AudioRecorderComponent({
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">
               {AudioComparison.getAccuracyLabel(
-                comparisonResult.overallAccuracy
+                comparisonResult.overallAccuracy,
               )}
             </span>
           </div>

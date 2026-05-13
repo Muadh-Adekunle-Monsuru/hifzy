@@ -1,11 +1,14 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
-import { SM2, CardState, ReviewResult } from '@/lib/srs/sm2-algorithm';
+import { useCallback, useEffect, useState } from "react";
+import { SM2, CardState, ReviewResult } from "@/lib/srs/sm2-algorithm";
 
 export interface Card {
   id: string;
   verseId: string;
+  arabicText: string;
+  audioUrl: string;
+  answerVerses: string;
   interval: number;
   easeFactor: number;
   repetitions: number;
@@ -40,7 +43,7 @@ export function useSpacedRepetition(cards: Card[]) {
         setCurrentCardIndex(0);
       }
     },
-    [currentCard, currentCardIndex, cardsDue.length]
+    [currentCard, currentCardIndex, cardsDue.length],
   );
 
   const resetSession = useCallback(() => {

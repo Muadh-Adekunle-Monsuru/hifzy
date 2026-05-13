@@ -9,45 +9,38 @@ export function BentoGridSection() {
       initial="hidden"
       animate="visible"
       variants={stagger}
-      className="px-margin-mobile md:px-margin-desktop py-xl"
+      className="px-5  py-20"
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-md md:h-[70vh]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3  md:h-[70vh] text-white">
         {/* Offline-First */}
         <MotionDiv
           variants={fadeUp}
-          className="md:col-span-8 bento-cell p-md flex flex-col justify-between relative overflow-hidden group"
+          className="md:col-span-8 bento-cell p-4 flex flex-col justify-between relative overflow-hidden group"
         >
-          <CloudOff className="size-10 md:size-20" />
+          <CloudOff className="size-10 md:size-20 text-muted-foreground" />
           <div>
-            <h3 className="font-headline-md text-headline-md text-primary mb-xs">
+            <h3 className="font-bold text-4xl text-primary mb-3">
               Offline-First Architecture
             </h3>
-            <p className="font-body-md text-body-md text-on-surface-variant">
+            <p className="font-light max-w-lg">
               Seamless revision regardless of your connection. Your data syncs
               automatically once you're back online.
             </p>
-          </div>
-          <div className="absolute top-0 right-0 p-sm opacity-10 group-hover:opacity-30 transition-opacity">
-            <WifiOff className="size-20" />
           </div>
         </MotionDiv>
 
         {/* SRS Logic */}
         <MotionDiv
           variants={fadeUp}
-          className="md:col-span-4 bento-cell p-md flex flex-col justify-between border-primary"
+          className="md:col-span-4 bento-cell p-4 flex flex-col justify-between border-primary"
         >
           <div className="flex justify-between items-start">
-            <Repeat className="size-10" />
-            <div className="text-label-caps bg-primary text-on-primary px-xs py-1">
-              ALGORITHM
-            </div>
+            <Repeat className="size-10 md:size-20 text-muted-foreground" />
+            <div className=" text-xs text-primary  px-2 py-1">ALGORITHM</div>
           </div>
           <div>
-            <h3 className="font-headline-md text-headline-md text-primary mb-xs">
-              SRS Logic
-            </h3>
-            <p className="font-body-md text-body-md text-on-surface-variant">
+            <h3 className="font-bold text-4xl text-primary mb-3">SRS Logic</h3>
+            <p className="font-light max-w-lg">
               Intelligent Spaced Repetition scheduling based on your self-graded
               performance.
             </p>
@@ -57,14 +50,14 @@ export function BentoGridSection() {
         {/* Audio Comparison */}
         <MotionDiv
           variants={fadeUp}
-          className="md:col-span-4 bento-cell p-md flex flex-col justify-between"
+          className="md:col-span-4 bento-cell p-4 flex flex-col justify-between"
         >
-          <AudioLines className="size-10" />
+          <AudioLines className="size-10 md:size-20 text-muted-foreground" />
           <div>
-            <h3 className="font-headline-md text-headline-md text-primary mb-xs">
+            <h3 className="font-bold text-4xl text-primary mb-3">
               Audio Comparison
             </h3>
-            <p className="font-body-md text-body-md text-on-surface-variant">
+            <p className="font-light max-w-lg">
               Record your recitation and compare it directly with master
               reciters to self-correct.
             </p>
@@ -74,13 +67,13 @@ export function BentoGridSection() {
         {/* Consistency */}
         <MotionDiv
           variants={fadeUp}
-          className="md:col-span-8 bento-cell p-md flex items-center justify-between gap-md"
+          className="md:col-span-8 bento-cell p-4 flex items-center justify-between gap-4"
         >
           <div className="flex-1">
-            <h3 className="font-headline-md text-headline-md text-primary mb-xs">
+            <h3 className="font-bold text-4xl text-primary mb-3">
               Focus Focused
             </h3>
-            <p className="font-body-md text-body-md text-on-surface-variant">
+            <p className="font-light max-w-lg">
               Eliminating digital noise for spiritual retention. No ads, no
               social feeds, just the Quran.
             </p>

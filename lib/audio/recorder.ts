@@ -54,11 +54,11 @@ export class AudioRecorder {
       };
 
       this.mediaRecorder.start();
-      console.log('[v0] Recording started');
+      console.log("Recording started");
     } catch (error) {
-      console.error('[v0] Microphone access denied:', error);
+      console.error("Microphone access denied:", error);
       throw new Error(
-        'Microphone access is required to record your recitation'
+        "Microphone access is required to record your recitation",
       );
     }
   }
@@ -68,7 +68,7 @@ export class AudioRecorder {
    */
   async stop(): Promise<RecordingData> {
     if (!this.mediaRecorder || !this.isRecording) {
-      throw new Error('No active recording');
+      throw new Error("No active recording");
     }
 
     return new Promise((resolve, reject) => {
@@ -89,7 +89,11 @@ export class AudioRecorder {
         }
 
         this.isRecording = false;
-        console.log('[v0] Recording stopped. Duration:', duration.toFixed(2), 'seconds');
+        console.log(
+          "Recording stopped. Duration:",
+          duration.toFixed(2),
+          "seconds",
+        );
 
         resolve({
           blob: audioBlob,
@@ -120,7 +124,7 @@ export class AudioRecorder {
       }
 
       this.audioChunks = [];
-      console.log('[v0] Recording cancelled');
+      console.log("Recording cancelled");
     }
   }
 
@@ -147,11 +151,11 @@ export class AudioRecorder {
    */
   private getCompatibleMimeType(): string {
     const types = [
-      'audio/webm;codecs=opus',
-      'audio/webm',
-      'audio/ogg;codecs=opus',
-      'audio/mp4',
-      'audio/wav',
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/ogg;codecs=opus",
+      "audio/mp4",
+      "audio/wav",
     ];
 
     for (const type of types) {
@@ -161,7 +165,7 @@ export class AudioRecorder {
     }
 
     // Fallback to default
-    return 'audio/webm';
+    return "audio/webm";
   }
 
   /**
@@ -192,7 +196,7 @@ export class AudioRecorder {
 
       audio.onerror = () => {
         URL.revokeObjectURL(url);
-        reject(new Error('Failed to get audio duration'));
+        reject(new Error("Failed to get audio duration"));
       };
     });
   }

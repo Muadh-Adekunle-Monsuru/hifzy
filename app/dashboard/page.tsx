@@ -38,27 +38,17 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary min-h-screen">
+    <div className="bg-background text-primary selection:bg-primary selection:text-black font-sans min-h-screen">
       <TopAppBar />
-      <main className="pt-32 pb-24 px-margin-mobile md:px-margin-desktop min-h-screen relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="sky-doodle top-40 left-10">
-          <span className="material-symbols-outlined text-[120px]">
-            dark_mode
-          </span>
-        </div>
-        <div className="sky-doodle bottom-20 right-20 scale-150 rotate-12">
-          <span className="material-symbols-outlined text-[80px]">flare</span>
-        </div>
-
+      <main className="pt-32 pb-24 px-5 md:px-20 min-h-screen relative overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto">
           <DashboardHeader />
 
           {/* Bento Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
-            <RecentRanges />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
             <MasteryHeatmap />
             <CurrentStreak />
+            <RecentRanges />
             <RetentionStats />
             <DailyTip />
           </div>

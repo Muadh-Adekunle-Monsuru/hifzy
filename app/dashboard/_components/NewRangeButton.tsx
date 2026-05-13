@@ -1,3 +1,4 @@
+import { PlusCircle } from "lucide-react";
 import React, { forwardRef } from "react";
 
 const NewRangeButton = forwardRef<
@@ -8,16 +9,12 @@ const NewRangeButton = forwardRef<
     <div
       ref={ref}
       {...props}
-      className={`col-span-6 md:col-span-2 border-2 border-dashed border-outline-variant p-md flex flex-col items-center justify-center text-center gap-sm hover:bg-surface-container-lowest transition-colors cursor-pointer group h-40 select-none ${props.className || ""}`}
+      className={`col-span-6 md:col-span-2 border-2 border-dashed border-outline-variant p-5 flex flex-col items-center justify-center text-center gap-3 hover:bg-[#2a2a2b] transition-colors cursor-pointer group h-40 select-none ${props.className || ""}`}
     >
-      <span className="material-symbols-outlined text-[48px] text-outline group-hover:text-primary transition-colors">
-        add_circle
-      </span>
+      <PlusCircle className="text-muted-foreground" />
       <div>
-        <p className="font-headline-md text-headline-md-mobile">
-          Setup New Range
-        </p>
-        <p className="font-label-caps text-label-caps text-outline mt-xs">
+        <p className=" text-xl font-medium mb-2">Setup New Range</p>
+        <p className="text-xs font-mono text-muted-foreground">
           SELECT SURAHS OR PAGES
         </p>
       </div>

@@ -5,6 +5,7 @@ import LokiJSAdapter from "@nozbe/watermelondb/adapters/lokijs";
 import { dbSchema } from "./schema";
 
 import { Range } from "./models/Range";
+import { Cards } from "./models/Cards";
 
 let db: Database | null = null;
 
@@ -23,7 +24,7 @@ export async function initDatabase(): Promise<Database> {
 
     db = new Database({
       adapter,
-      modelClasses: [Range],
+      modelClasses: [Range, Cards],
     });
 
     return db;

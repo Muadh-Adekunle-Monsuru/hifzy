@@ -6,6 +6,7 @@ import { initDatabase } from "@/lib/database/init";
 import { Range } from "@/lib/database/models/Range";
 import { useRouter } from "next/navigation";
 import { randomBytes } from "crypto";
+import { ChevronRight, History } from "lucide-react";
 
 export function RecentRanges() {
   const [ranges, setRanges] = useState<Range[]>([]);
@@ -24,7 +25,6 @@ export function RecentRanges() {
           .query()
           .observe()
           .subscribe((data) => {
-            console.log("Ranges: ", data);
             setRanges([...data].reverse()); // Use spread to ensure a new array reference
           });
       } catch (error) {
@@ -42,14 +42,12 @@ export function RecentRanges() {
   }, []);
 
   return (
-    <div className="md:col-span-12 mt-md grid grid-cols-6 gap-gutter">
+    <div className="md:col-span-12 mt-7 grid grid-cols-6 gap-5">
       {/* Header */}
-      <div className="mb-sm col-span-6">
-        <h3 className="font-headline-md text-headline-md border-b border-outline-variant pb-xs flex items-center gap-sm">
+      <div className="mb-4 col-span-6 flex items-center gap-2  border-b border-gray-200 pb-2">
+        <History className="text-muted-foreground" />
+        <h3 className="text-xl font-semibold uppercase text-muted-foreground">
           Study Ranges
-          <span className="material-symbols-outlined text-outline">
-            history
-          </span>
         </h3>
       </div>
 
@@ -58,32 +56,30 @@ export function RecentRanges() {
         <div
           key={range.id}
           onClick={() => router.push(`/dashboard/study/${range.id}`)}
-          className="col-span-6 md:col-span-2 bento-card bg-surface-container-low p-md group cursor-pointer active:scale-95 transition-all"
+          className="col-span-6 md:col-span-2 bento-card bg-[#1c1b1b] p-5 group cursor-pointer active:scale-95 transition-all"
         >
-          <div className="flex justify-between items-start mb-md">
-            <span className="font-label-caps text-label-caps text-outline">
+          <div className="flex justify-between items-center mb-5">
+            <span className="font-medium text-muted-foreground group-hover:text-primary text-xs ">
               {range.startSurahNumber ? "BY SURAH" : "BY PAGE"}
             </span>
-            <span className="material-symbols-outlined text-primary group-hover:translate-x-1 transition-transform">
-              arrow_forward_ios
-            </span>
+            <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:scale-110" />
           </div>
-          <div className="flex justify-between items-end mb-sm">
+          <div className="flex justify-between items-end mb-5">
             {range.startSurahNumber && (
-              <h4 className="font-headline-md text-headline-md">
+              <h4 className="text-3xl font-medium">
                 {range.startSurahName}
                 {range.startSurahNumber !== range.endSurahNumber &&
                   ` - ${range.endSurahName}`}
               </h4>
             )}
             {range.startPage && (
-              <h4 className="font-headline-md text-headline-md">
+              <h4 className="text-3xl font-medium">
                 PAGES {range.startPage} - {range.endPage}
               </h4>
             )}
           </div>
-          <div className="flex flex-col gap-xs">
-            <div className="flex justify-between items-center text-label-caps font-label-caps">
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between items-center text-xs text-muted-foreground">
               {range.startSurahNumber && (
                 <span className="text-outline">
                   {range.startSurahNumber === range.endSurahNumber
@@ -93,8 +89,8 @@ export function RecentRanges() {
               )}
               <span className="text-primary">0% MASTERY</span>
             </div>
-            <div className="h-[2px] w-full bg-outline-variant">
-              <div className="h-full bg-primary w-[0%]"></div>
+            <div className="h-[2px] w-full bg-neutral-300 rounded-full">
+              <div className="h-full bg-primary w-[0%] rounded-full"></div>
             </div>
           </div>
         </div>

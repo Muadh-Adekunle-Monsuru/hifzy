@@ -12,6 +12,11 @@ import { ActiveSession } from "../_components/ActiveSession";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSpacedRepetition } from "@/hooks/useSpacedRepetition";
+import { Cards } from "@/lib/database/models/Cards";
+import { initDatabase } from "@/lib/database/init";
+import { Q } from "@nozbe/watermelondb";
+import { toast } from "sonner";
 
 export default function StudyPage({
   params,
@@ -19,119 +24,84 @@ export default function StudyPage({
   params: Promise<{ rangeId: string }>;
 }) {
   const rangeId = use(params).rangeId;
-  const [sessionCards, setSessionCards] = useState<SessionCard[]>([]);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [reviewHistory, setReviewHistory] = useState<ReviewResult[]>([]);
+  const [cards, setCards] = useState<Cards[]>([]);
   const [isSessionActive, setIsSessionActive] = useState(false);
-  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
-
-  // Initialize session with cards due for review
   useEffect(() => {
-    // For MVP, we'll simulate cards that are due
-    const mockCards: SessionCard[] = quranVerses.map((verse, index) => ({
-      id: `card_${index}`,
-      verseId: verse.id,
-      state: {
-        ...SM2.createInitialCard(),
-        // Make first 5 verses due
-        nextReviewDate: index < 5 ? Date.now() - 1000 : Date.now() + 86400000,
-      },
-      verse,
-    }));
+    const fetchRanges = async () => {
+      try {
+        const db = await initDatabase();
+        const rangesCollection = db.get<Cards>("cards");
 
-    // Filter only cards due for review
-    const cardsDue = mockCards.filter((card) => SM2.isDue(card.state));
+        const filteredCards = await rangesCollection
+          .query(Q.where("range_id", rangeId))
+          .fetch();
 
-    setSessionCards(cardsDue);
+        setCards(filteredCards);
+      } catch (error) {
+        toast.error("Failed to fetch cards");
+        console.error("Failed to fetch cards:", error);
+      }
+    };
 
-    if (cardsDue.length === 0) {
-      setIsSessionActive(false);
-    }
+    fetchRanges();
   }, []);
+
+  const formattedCards = useMemo(() => {
+    return cards.map((card) => ({
+      id: card.id,
+      verseId: card.verseId,
+      interval: card.interval,
+      easeFactor: card.easeFactor,
+      repetitions: card.repetitions,
+      nextReviewDate: card.nextReviewDate?.getTime() ?? 0,
+      isMastered: card.isMastered,
+      arabicText: card.arabicText,
+      audioUrl: card.audioUrl,
+      answerVerses: card.answerVerses,
+    }));
+  }, [cards]);
+
+  const handleRating = (quality: number) => {
+    submitReview(quality);
+    setShowAnswer(false); // Reset to "Front" for the next card
+  };
 
   const startSession = () => {
     setIsSessionActive(true);
-    setSessionStartTime(Date.now());
-    setCurrentCardIndex(0);
-    setReviewHistory([]);
     setShowAnswer(false);
   };
 
-  const handleGrade = (quality: number) => {
-    if (currentCardIndex >= sessionCards.length) return;
-
-    const currentCard = sessionCards[currentCardIndex];
-    const result = SM2.calculateNextReview(currentCard.state, quality);
-
-    setReviewHistory((prev) => [...prev, result]);
-
-    // Move to next card
-    if (currentCardIndex < sessionCards.length - 1) {
-      setCurrentCardIndex((prev) => prev + 1);
-      setShowAnswer(false);
-    } else {
-      // Session complete
-      setIsSessionActive(false);
-    }
-  };
-
-  const currentCard = sessionCards[currentCardIndex];
-  const isSessionComplete =
-    currentCardIndex >= sessionCards.length && isSessionActive === false;
-  const cardsDue = sessionCards.length;
-
-  // Calculate session stats
-  const sessionStats: SessionStats = useMemo(() => {
-    if (reviewHistory.length === 0) {
-      return {
-        totalReviewed: 0,
-        avgQuality: 0,
-        graduated: 0,
-        sessionDuration: 0,
-      };
-    }
-
-    const graduated = reviewHistory.filter((r) => r.isGraduated).length;
-    const avgQuality =
-      reviewHistory.reduce((sum, r) => sum + r.quality, 0) /
-      reviewHistory.length;
-    const sessionDuration = sessionStartTime
-      ? Math.round((Date.now() - sessionStartTime) / 60000)
-      : 0;
-
-    return {
-      totalReviewed: reviewHistory.length,
-      avgQuality: avgQuality.toFixed(1),
-      graduated,
-      sessionDuration,
-    };
-  }, [reviewHistory, sessionStartTime]);
+  const {
+    currentCard,
+    submitReview,
+    isSessionComplete,
+    cardsDue,
+    currentCardIndex,
+    resetSession,
+    reviewHistory,
+    sessionStats,
+  } = useSpacedRepetition(formattedCards);
 
   return (
-    <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col celestial-bg">
-      <TopAppBar />
-
-      <main className="flex-grow flex flex-col items-center justify-center px-gap-margin-mobile md:px-gap-margin-desktop py-gap-lg max-w-7xl mx-auto w-full">
-        {cardsDue === 0 ? (
+    <div className="dark bg-[#131314] text-white min-h-screen flex flex-col ">
+      <main className="flex-grow flex flex-col items-center justify-center w-full mx-auto p-3">
+        {cardsDue.length === 0 ? (
           <EmptySession />
         ) : isSessionActive && currentCard ? (
           <ActiveSession
             currentCardIndex={currentCardIndex}
-            cardsDue={cardsDue}
+            cardsDue={cardsDue.length}
             currentCard={currentCard}
             showAnswer={showAnswer}
             setShowAnswer={setShowAnswer}
-            handleGrade={handleGrade}
+            handleGrade={handleRating}
           />
         ) : isSessionComplete ? (
-          <SessionComplete
-            sessionStats={sessionStats}
-            startSession={startSession}
-          />
+          <SessionComplete sessionStats={sessionStats} />
         ) : (
           <ReadySession
-            cardsDue={cardsDue}
+            cardsDue={cardsDue.length}
             startSession={startSession}
             rangeId={rangeId}
           />

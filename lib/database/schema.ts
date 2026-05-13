@@ -34,7 +34,11 @@ export const dbSchema = appSchema({
     tableSchema({
       name: "cards",
       columns: [
+        { name: "range_id", type: "string" },
         { name: "verse_id", type: "string" },
+        { name: "arabic_text", type: "string" },
+        { name: "audio_url", type: "string" },
+        { name: "answer_verses", type: "string" },
         { name: "interval", type: "number" }, // days
         { name: "ease_factor", type: "number" }, // SM-2 ease factor
         { name: "repetitions", type: "number" }, // times reviewed

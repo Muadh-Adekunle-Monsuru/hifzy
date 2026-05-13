@@ -7,7 +7,7 @@ import { Footer } from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <div className="dark bg-[#131314] text-on-surface selection:bg-primary selection:text-on-primary font-body-md min-h-screen">
+    <div className="dark bg-[#131314]  text-on-background selection:bg-primary selection:text-on-primary font-body-md min-h-screen">
       <TopAppBar />
       <main className="pt-24 pb-32  max-w-7xl mx-auto ">
         <HeroSection />

@@ -1,8 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { MotionDiv } from "@/components/ui/Motion";
 import { fadeUp } from "@/lib/motion";
 import { getToken } from "@/lib/utils/auth";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function DashboardHeader() {
   const [firstName, setFirst] = useState("");
@@ -22,8 +24,11 @@ export function DashboardHeader() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
-        setFirst(data?.username[0]);
+        setFirst(data?.first_name);
+      } else {
+        toast.error(
+          "Failed to fetch your data, please re-login or refresh the page",
+        );
       }
     };
 
@@ -33,20 +38,20 @@ export function DashboardHeader() {
     <MotionDiv
       initial="hidden"
       animate="visible"
-      className="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-sm"
+      className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-3"
     >
       <MotionDiv variants={fadeUp}>
-        <p className="font-label-caps text-label-caps text-outline mb-xs">
+        <p className=" text-sm text-muted-foreground mb-1">
           BISMILLAHIR RAHMANIR RAHIM
         </p>
-        <h2 className="font-display-lg text-display-lg tracking-tighter">
-          Ahlan, {firstName.toUpperCase()} 👋
+        <h2 className="font-black text-5xl text-tighter">
+          Ahlan, {firstName} 👋
         </h2>
       </MotionDiv>
       <MotionDiv variants={fadeUp} className="">
-        <button className="mt-md w-fit bg-primary text-on-primary px-lg py-xs font-bold active:scale-95 transition-all">
+        <Button variant={"outline"} size={"lg"}>
           RESUME SESSION
-        </button>
+        </Button>
       </MotionDiv>
     </MotionDiv>
   );

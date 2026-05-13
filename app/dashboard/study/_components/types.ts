@@ -10,7 +10,6 @@ export interface SessionCard {
 
 export interface SessionStats {
   totalReviewed: number;
-  avgQuality: number | string;
+  avgQuality: number;
   graduated: number;
-  sessionDuration: number;
 }

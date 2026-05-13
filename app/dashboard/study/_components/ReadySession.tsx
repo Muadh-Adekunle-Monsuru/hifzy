@@ -33,32 +33,23 @@ export function ReadySession({
   }, [rangeId]);
 
   return (
-    <div className="w-full max-w-2xl border rounded-xl bg-surface-container relative overflow-hidden flex flex-col items-center p-md gap-md">
-      {/* Decorative Background Icon */}
-      <div className="absolute -top-12 -left-12 opacity-10 transform -rotate-12 pointer-events-none">
-        <span
-          className="material-symbols-outlined text-[200px]"
-          style={{ fontVariationSettings: "'FILL' 1" }}
-        >
-          book_4
-        </span>
-      </div>
-
+    <div className="w-full max-w-2xl bento-cell  bg-[#1b1b1f] relative overflow-hidden flex flex-col items-center p-5 gap-md">
       {/* Top Navigation Row */}
       <div className="w-full flex justify-between gap-md relative z-10">
-        <button
+        <Button
+          variant={"ghost"}
           onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-xs text-label-caps font-label-caps text-secondary hover:text-primary transition-colors group"
+          className="flex items-center gap-xs group"
         >
           <ChevronLeftIcon className="size-4 group-hover:-translate-x-1 transition-transform" />
           DASHBOARD
-        </button>
+        </Button>
         <DeleteRangeDialog randId={rangeId} />
       </div>
 
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col items-center justify-center gap-4 text-center relative z-10">
-        <span className="font-label-caps text-label-caps text-outline tracking-widest mb-gap-sm">
+        <span className="text-muted-foreground font-mono ">
           UPCOMING SESSION
         </span>
 
@@ -82,25 +73,20 @@ export function ReadySession({
           )}
         </div>
 
-        <div className="flex items-center gap-3 bg-surface-container-low px-4 py-2 border border-outline-variant rounded-full mb-gap-xl">
-          <History className="size-4 text-primary" />
-          <p className="font-body-md text-primary">
-            {cardsDue}{" "}
-            <span className="text-secondary">verses due for review</span>
+        <div className="flex items-center gap-3 bg-surface-container-low px-4 py-2 border border-outline-variant rounded-full mb-5">
+          <History className="size-4 text-muted-foreground" />
+          <p className="text-muted-foreground">
+            {cardsDue} <span className="">verses due for review</span>
           </p>
         </div>
 
         <button
           onClick={startSession}
-          className="w-full py-4 border-2 border-primary bg-primary text-background font-headline-md uppercase tracking-tighter hover:bg-background hover:scale-105 cursor-pointer transition-all active:scale-[0.98] relative overflow-hidden group shadow-xl"
+          className="w-fit bg-primary px-10  py-4 border-2 border-primary text-background font-bold uppercase tracking-widest hover:bg-transparent hover:text-primary transition-all active:scale-[0.98] cursor-pointer"
         >
           <span className="relative z-10">Begin Study Session</span>
-          <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 ease-in-out"></div>
         </button>
       </div>
-
-      {/* Bottom Footer Accent */}
-      <div className="w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default function DeleteRangeDialog({ randId }: { randId: string }) {
           <Trash />
         </Button>
       </DialogTrigger>
-      <DialogContent className=" min-w-[25rem]">
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle className="text-white">
             Are you absolutely sure?

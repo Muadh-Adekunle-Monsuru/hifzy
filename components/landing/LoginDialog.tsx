@@ -35,7 +35,7 @@ export default function LoginDialog() {
             </TooltipContent>
           </Tooltip>
         </DialogTrigger>
-        <DialogContent className=" min-w-[25rem]">
+        <DialogContent className="">
           <DialogHeader>
             <DialogTitle className="text-white text-2xl">
               Sign in with Quran.com

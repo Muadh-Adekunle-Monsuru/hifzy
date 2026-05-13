@@ -22,7 +22,9 @@ export class AudioComparison {
    */
   static async analyzeAudio(blob: Blob): Promise<AudioAnalysis> {
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
       const arrayBuffer = await blob.arrayBuffer();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
@@ -42,7 +44,7 @@ export class AudioComparison {
         frequency,
       };
     } catch (error) {
-      console.error('[v0] Audio analysis failed:', error);
+      console.error("Audio analysis failed:", error);
       // Return default values if analysis fails
       return {
         duration: 0,
@@ -57,16 +59,16 @@ export class AudioComparison {
    */
   static compareAudio(
     referenceAnalysis: AudioAnalysis,
-    userAnalysis: AudioAnalysis
+    userAnalysis: AudioAnalysis,
   ): ComparisonResult {
     // Duration comparison (±20% tolerance)
     const durationDiff = Math.abs(
-      userAnalysis.duration - referenceAnalysis.duration
+      userAnalysis.duration - referenceAnalysis.duration,
     );
     const durationTolerance = referenceAnalysis.duration * 0.2;
     const durationMatch = Math.max(
       0,
-      100 - (durationDiff / durationTolerance) * 100
+      100 - (durationDiff / durationTolerance) * 100,
     );
 
     // Frequency comparison (if available)
@@ -83,14 +85,14 @@ export class AudioComparison {
     }
 
     // Overall accuracy (weighted average)
-    const overallAccuracy = (durationMatch * 0.6 + frequencyMatch * 0.4);
+    const overallAccuracy = durationMatch * 0.6 + frequencyMatch * 0.4;
 
     // Generate feedback
     const feedback = this.generateFeedback(
       durationMatch,
       frequencyMatch,
       userAnalysis,
-      referenceAnalysis
+      referenceAnalysis,
     );
 
     return {
@@ -117,7 +119,7 @@ export class AudioComparison {
    */
   private static estimateFrequency(
     data: Float32Array,
-    sampleRate: number
+    sampleRate: number,
   ): number {
     // Use a simplified approach with FFT
     // For production, consider using a proper pitch detection library
@@ -130,7 +132,10 @@ export class AudioComparison {
 
     // Use autocorrelation on a subset of the audio
     const bufferSize = Math.min(4096, data.length);
-    const correlations = this.autocorrelate(data.slice(0, bufferSize), sampleRate);
+    const correlations = this.autocorrelate(
+      data.slice(0, bufferSize),
+      sampleRate,
+    );
 
     // Find the peak in correlations
     let maxValue = -Infinity;
@@ -157,7 +162,10 @@ export class AudioComparison {
   /**
    * Simple autocorrelation function
    */
-  private static autocorrelate(data: Float32Array, sampleRate: number): number[] {
+  private static autocorrelate(
+    data: Float32Array,
+    sampleRate: number,
+  ): number[] {
     const correlations: number[] = [];
 
     for (let lag = 0; lag < data.length / 2; lag++) {
@@ -184,32 +192,32 @@ export class AudioComparison {
     durationMatch: number,
     frequencyMatch: number,
     userAnalysis: AudioAnalysis,
-    referenceAnalysis: AudioAnalysis
+    referenceAnalysis: AudioAnalysis,
   ): string {
-    const accuracy = (durationMatch * 0.6 + frequencyMatch * 0.4);
+    const accuracy = durationMatch * 0.6 + frequencyMatch * 0.4;
 
     if (accuracy >= 90) {
-      return 'Excellent recitation! Very close to the reference.';
+      return "Excellent recitation! Very close to the reference.";
     } else if (accuracy >= 75) {
-      return 'Good effort! Minor adjustments needed.';
+      return "Good effort! Minor adjustments needed.";
     } else if (accuracy >= 60) {
-      let feedback = 'Needs improvement. ';
+      let feedback = "Needs improvement. ";
 
       if (durationMatch < 60) {
         const durationDiff =
           Math.abs(userAnalysis.duration - referenceAnalysis.duration) > 0
-            ? 'longer'
-            : 'shorter';
+            ? "longer"
+            : "shorter";
         feedback += `Try to recite a bit ${durationDiff}. `;
       }
 
       if (frequencyMatch < 60 && userAnalysis.frequency) {
-        feedback += 'Work on your pronunciation tone.';
+        feedback += "Work on your pronunciation tone.";
       }
 
       return feedback;
     } else {
-      return 'Keep practicing! Compare closely with the reference audio and adjust your pace and tone.';
+      return "Keep practicing! Compare closely with the reference audio and adjust your pace and tone.";
     }
   }
 
@@ -217,11 +225,11 @@ export class AudioComparison {
    * Get accuracy label
    */
   static getAccuracyLabel(accuracy: number): string {
-    if (accuracy >= 90) return 'Excellent';
-    if (accuracy >= 75) return 'Good';
-    if (accuracy >= 60) return 'Fair';
-    if (accuracy >= 45) return 'Poor';
-    return 'Very Poor';
+    if (accuracy >= 90) return "Excellent";
+    if (accuracy >= 75) return "Good";
+    if (accuracy >= 60) return "Fair";
+    if (accuracy >= 45) return "Poor";
+    return "Very Poor";
   }
 
   /**

@@ -36,13 +36,6 @@ export const logout = async () => {
   window.location.href = "/login";
 };
 
-/**
- * Enhanced fetch wrapper that handles:
- * 1. Automatic Authorization header injection
- * 2. Token expiration detection and refresh
- * 3. Automatic retry of the original request after refresh
- * 4. Redirection to login on invalid tokens
- */
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -63,7 +56,6 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
       const errorData = await errorResponse.json();
 
       if (errorData.detail === "token_expired") {
-        // If already refreshing, wait for the existing promise
         if (isRefreshing && refreshPromise) {
           const success = await refreshPromise;
           if (success) {
@@ -77,7 +69,6 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
           return response;
         }
 
-        // Start a new refresh process
         isRefreshing = true;
         refreshPromise = (async () => {
           const refreshToken = getRefreshToken();

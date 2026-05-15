@@ -90,6 +90,7 @@ export class SM2 {
 
     return {
       quality: q,
+      repetitions: newRepetitions,
       interval: newInterval,
       easeFactor: newEaseFactor,
       nextReviewDate,

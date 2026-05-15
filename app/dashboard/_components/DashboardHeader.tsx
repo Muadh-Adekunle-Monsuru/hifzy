@@ -6,6 +6,7 @@ import { CloudSync, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { syncDatabase } from "@/lib/database/sync";
+import { apiFetch } from "@/lib/utils/auth";
 
 export function DashboardHeader() {
   const [firstName, setFirst] = useState("");
@@ -28,18 +29,10 @@ export function DashboardHeader() {
 
   useEffect(() => {
     setError(false);
-    const token = localStorage.getItem("token");
     const getUser = async () => {
       try {
-        const response = await fetch(
+        const response = await apiFetch(
           "https://quran-be-59779bf2.fastapicloud.dev/auth/me",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          },
         );
 
         if (response.ok) {
@@ -83,11 +76,7 @@ export function DashboardHeader() {
             onClick={handleSync}
             disabled={syncing}
           >
-            {syncing ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <CloudSync />
-            )}
+            {syncing ? <Loader2 className="animate-spin" /> : <CloudSync />}
             {syncing ? "Syncing..." : "Sync"}
           </Button>
         )}

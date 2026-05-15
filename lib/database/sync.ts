@@ -1,27 +1,17 @@
 import { synchronize } from "@nozbe/watermelondb/sync";
 import { getDatabase } from "./init";
-import { getToken } from "../utils/auth";
+import { apiFetch } from "../utils/auth";
 
 const API_URL = "https://quran-be-59779bf2.fastapicloud.dev/sync";
 
 export async function syncDatabase() {
   const database = getDatabase();
-  const token = getToken();
-
-  if (!token) {
-    throw new Error("No authentication token found");
-  }
 
   await synchronize({
     database,
     pullChanges: async ({ lastPulledAt }) => {
-      const response = await fetch(
+      const response = await apiFetch(
         `${API_URL}/pull?last_pulled_at=${lastPulledAt || 0}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
       );
 
       if (!response.ok) {
@@ -55,9 +45,6 @@ export async function syncDatabase() {
       return { changes: mappedChanges, timestamp };
     },
     pushChanges: async ({ changes, lastPulledAt }) => {
-      // Split the push into two steps to ensure decks exist before cards are processed
-      // This is a workaround for servers that don't handle relational sync payloads in a single transaction
-
       // Step 1: Push Decks (Ranges)
       const deckChanges: any = {
         decks: {
@@ -74,16 +61,10 @@ export async function syncDatabase() {
         preferences: { created: [], updated: [], deleted: [] },
       };
 
-      console.log("Pushing Decks:", JSON.stringify(deckChanges, null, 2));
-
-      const deckResponse = await fetch(
+      const deckResponse = await apiFetch(
         `${API_URL}/push?last_pulled_at=${lastPulledAt || 0}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify({
             changes: deckChanges,
             lastPulledAt: lastPulledAt || 0,
@@ -107,16 +88,10 @@ export async function syncDatabase() {
         preferences: { created: [], updated: [], deleted: [] },
       };
 
-      console.log("Pushing Cards:", JSON.stringify(cardChanges, null, 2));
-
-      const cardResponse = await fetch(
+      const cardResponse = await apiFetch(
         `${API_URL}/push?last_pulled_at=${lastPulledAt || 0}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify({
             changes: cardChanges,
             lastPulledAt: lastPulledAt || 0,

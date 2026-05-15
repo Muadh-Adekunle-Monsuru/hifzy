@@ -54,7 +54,7 @@ export function DailyTip() {
         <h3 className="text-muted-foreground text-sm font-mono font-semibold mb-3 ">
           MOTIVATION
         </h3>
-        <p className="text-4xl italic font-bold">{currentMotivation.quote}</p>
+        <p className="text-4xl italic font-thin">{currentMotivation.quote}</p>
       </div>
     </div>
   );

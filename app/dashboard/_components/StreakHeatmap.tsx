@@ -58,7 +58,7 @@ export function StreakHeatmap() {
                 : cells.map((cls, idx) => (
                     <div
                       key={idx}
-                      className={`bg-neutral-800 size-4 border ${cls}`}
+                      className={`bg-neutral-800 size-5 border ${cls}`}
                     ></div>
                   ))}
             </div>
@@ -67,7 +67,7 @@ export function StreakHeatmap() {
       </div>
       <div className="mt-5 flex justify-between items-center">
         <span className="text-gray-300 text-[12px] uppercase">
-          {history.length} DAYS VISITED IN THE LAST 10 WEEKS
+          DAYS VISITED IN THE LAST 10 WEEKS
         </span>
         <div className="flex items-center gap-3">
           <span className="text-gray-300 text-[10px]">LESS</span>

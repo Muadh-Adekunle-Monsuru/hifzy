@@ -59,6 +59,7 @@ export default function StudyPage({
       arabicText: card.arabicText,
       audioUrl: card.audioUrl,
       answerVerses: card.answerVerses,
+      lastReviewDate: card.lastReviewDate?.getTime() ?? 0,
     }));
   }, [cards]);
 

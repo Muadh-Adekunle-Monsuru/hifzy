@@ -1,22 +1,15 @@
 "use client";
-import React, { useEffect, useState, useMemo, use } from "react";
-import { TopAppBar } from "@/components/landing/TopAppBar";
-import { Footer } from "@/components/landing/Footer";
-import { quranVerses } from "@/lib/data/quranic-verses";
-import { SM2, ReviewResult } from "@/lib/srs/sm2-algorithm";
-import { SessionCard, SessionStats } from "../_components/types";
+import { useSpacedRepetition } from "@/hooks/useSpacedRepetition";
+import { initDatabase } from "@/lib/database/init";
+import { Cards } from "@/lib/database/models/Cards";
+import { SM2 } from "@/lib/srs/sm2-algorithm";
+import { Q } from "@nozbe/watermelondb";
+import { use, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { ActiveSession } from "../_components/ActiveSession";
 import { EmptySession } from "../_components/EmptySession";
 import { ReadySession } from "../_components/ReadySession";
 import { SessionComplete } from "../_components/SessionComplete";
-import { ActiveSession } from "../_components/ActiveSession";
-import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useSpacedRepetition } from "@/hooks/useSpacedRepetition";
-import { Cards } from "@/lib/database/models/Cards";
-import { initDatabase } from "@/lib/database/init";
-import { Q } from "@nozbe/watermelondb";
-import { toast } from "sonner";
 
 export default function StudyPage({
   params,
@@ -45,7 +38,7 @@ export default function StudyPage({
     };
 
     fetchRanges();
-  }, []);
+  }, [rangeId]);
 
   const formattedCards = useMemo(() => {
     return cards.map((card) => ({

@@ -35,8 +35,8 @@ export function StreakHeatmap() {
   });
 
   return (
-    <div className="md:col-span-8 border-2 border-neutral-800 bg-[#1c1b1b] p-2 px-20 flex flex-col justify-between">
-      <div>
+    <div className="md:col-span-8 border-2 border-neutral-800 bg-[#1c1b1b] p-2 px-5 md:px-15 flex flex-col justify-between">
+      <div className="w-full">
         <div className="flex justify-between items-start mb-5">
           <h3 className=" text-sm font-medium text-primary">STREAK HEATMAP</h3>
           <span className="material-symbols-outlined text-outline">
@@ -58,7 +58,7 @@ export function StreakHeatmap() {
                 : cells.map((cls, idx) => (
                     <div
                       key={idx}
-                      className={`bg-neutral-800 size-5 border ${cls}`}
+                      className={`bg-neutral-800 size-4 border ${cls}`}
                     ></div>
                   ))}
             </div>

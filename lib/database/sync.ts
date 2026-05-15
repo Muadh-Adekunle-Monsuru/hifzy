@@ -20,7 +20,7 @@ export async function syncDatabase() {
       }
 
       const { changes: serverChanges, timestamp } = await response.json();
-
+      console.log(serverChanges);
       // Map server tables to local tables
       const mappedChanges: any = {
         range: {

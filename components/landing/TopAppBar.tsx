@@ -20,7 +20,7 @@ export function TopAppBar() {
     <MotionDiv
       initial="hidden"
       animate="visible"
-      className="bg-transparent backdrop-blur-sm text-primary border-b border-primary/10 fixed top-0 w-full z-50 flex justify-between items-center md:px-72 py-4 "
+      className="bg-transparent backdrop-blur-sm text-primary border-b border-primary/10 fixed top-0 w-full z-50 flex justify-between items-center md:px-72 py-4 px-4 md:px-0"
     >
       <MotionDiv
         variants={fadeUp}

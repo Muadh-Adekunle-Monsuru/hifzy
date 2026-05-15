@@ -3,11 +3,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import DeleteRangeDialog from "./DeleteRangeDialog";
 
-export function EmptySession() {
+export function EmptySession({ rangeId }: { rangeId: string }) {
   const router = useRouter();
   return (
     <div className="w-full max-w-2xl bento-cell  bg-[#1b1b1f] relative overflow-hidden flex flex-col items-center p-5 gap-md py-10">
+      <div className="w-full flex justify-end">
+        <DeleteRangeDialog randId={rangeId} />
+      </div>
       <div className="flex-grow flex flex-col items-center justify-center gap-4 text-center relative z-10">
         <h2 className="text-3xl font-bold text-primary mb-md">
           No verses due for review

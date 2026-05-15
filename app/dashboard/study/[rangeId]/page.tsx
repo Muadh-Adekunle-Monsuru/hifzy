@@ -124,7 +124,7 @@ export default function StudyPage({
     <div className="dark bg-[#131314] text-white min-h-screen flex flex-col ">
       <main className="flex-grow flex flex-col items-center justify-center w-full mx-auto p-3">
         {cardsDue.length === 0 ? (
-          <EmptySession />
+          <EmptySession rangeId={rangeId} />
         ) : isSessionActive && currentCard ? (
           <ActiveSession
             currentCardIndex={currentCardIndex}

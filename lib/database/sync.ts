@@ -1,6 +1,7 @@
 import { synchronize } from "@nozbe/watermelondb/sync";
 import { getDatabase } from "./init";
 import { apiFetch } from "../utils/auth";
+import { surahDetail } from "@/app/dashboard/_components/SurahDetails";
 
 const API_URL = "https://quran-be-59779bf2.fastapicloud.dev/sync";
 
@@ -103,19 +104,44 @@ export async function syncDatabase() {
         throw new Error(`Card sync failed: ${await cardResponse.text()}`);
       }
     },
+    sendCreatedAsUpdated: true,
   });
 }
 
 // Helpers for Decks <-> Range
 function mapServerDeckToLocalRange(deck: any) {
-  const [startSurah, startAyah] = (deck.range_start || "").split(":");
-  const [endSurah, endAyah] = (deck.range_end || "").split(":");
+  const rangeStart = deck.range_start || "";
+  const rangeEnd = deck.range_end || "";
+
+  if (rangeStart.startsWith("page:")) {
+    const [, startPage] = rangeStart.split(":");
+    const [, endPage] = rangeEnd.split(":");
+    return {
+      id: deck.id,
+      start_page: Number(startPage),
+      end_page: Number(endPage),
+      reciter: deck.recitation_id || 1,
+      created_at: new Date(deck.created_at).getTime(),
+    };
+  }
+
+  // Fallback to surah mode
+  const [startSurah, startAyah] = rangeStart.split(":");
+  const [endSurah, endAyah] = rangeEnd.split(":");
+
+  const sSurahNum = Number(startSurah);
+  const eSurahNum = Number(endSurah);
+
+  const startSurahData = surahDetail.find((s) => s.id === sSurahNum);
+  const endSurahData = surahDetail.find((s) => s.id === eSurahNum);
 
   return {
     id: deck.id,
-    start_surah_number: isNaN(Number(startSurah)) ? null : Number(startSurah),
+    start_surah_number: isNaN(sSurahNum) ? null : sSurahNum,
+    start_surah_name: startSurahData?.transliteration || "",
     start_ayah_number: isNaN(Number(startAyah)) ? null : Number(startAyah),
-    end_surah_number: isNaN(Number(endSurah)) ? null : Number(endSurah),
+    end_surah_number: isNaN(eSurahNum) ? null : eSurahNum,
+    end_surah_name: endSurahData?.transliteration || "",
     end_ayah_number: isNaN(Number(endAyah)) ? null : Number(endAyah),
     reciter: deck.recitation_id || 1,
     created_at: new Date(deck.created_at).getTime(),
@@ -123,11 +149,18 @@ function mapServerDeckToLocalRange(deck: any) {
 }
 
 function mapLocalRangeToServerDeck(range: any) {
+  const isSurahMode = !!range.start_surah_number;
   return {
     id: range.id,
-    name: `${range.start_surah_number}:${range.start_ayah_number}`,
-    range_start: `${range.start_surah_number}:${range.start_ayah_number}`,
-    range_end: `${range.end_surah_number}:${range.end_ayah_number}`,
+    name: isSurahMode
+      ? `${range.start_surah_number}:${range.start_ayah_number}`
+      : `page:${range.start_page}:${range.end_page}`,
+    range_start: isSurahMode
+      ? `${range.start_surah_number}:${range.start_ayah_number}`
+      : `page:${range.start_page}`,
+    range_end: isSurahMode
+      ? `${range.end_surah_number}:${range.end_ayah_number}`
+      : `page:${range.end_page}`,
     recitation_id: range.reciter,
   };
 }
@@ -138,6 +171,9 @@ function mapServerCardToLocalCard(card: any) {
     id: card.id,
     range_id: card.deck_id,
     verse_id: card.verse_key,
+    arabic_text: card.arabic_text || "",
+    audio_url: card.audio_url || "",
+    answer_verses: card.answer_verses || "[]",
     ease_factor: card.difficulty || 250,
     repetitions: card.reps || 0,
     next_review_date: new Date(card.due_date).getTime(),
@@ -151,6 +187,9 @@ function mapLocalCardToServerCard(card: any) {
     id: card.id,
     deck_id: card.range_id,
     verse_key: card.verse_id,
+    arabic_text: card.arabic_text,
+    audio_url: card.audio_url,
+    answer_verses: card.answer_verses,
     stability: 0,
     difficulty: card.ease_factor || 250,
     reps: card.repetitions || 0,

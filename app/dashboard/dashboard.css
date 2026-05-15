@@ -1,9 +1,14 @@
 .bento-card {
   border: 2px solid #737373;
-  transition: border-color 0.2s ease;
 }
-.bento-card:hover {
-  border-color: #ffffff;
+
+@media (min-width: 768px) {
+  .bento-card {
+    transition: border-color 0.2s ease;
+  }
+  .bento-card:hover {
+    border-color: #ffffff;
+  }
 }
 .heatmap-cell {
   width: 12px;

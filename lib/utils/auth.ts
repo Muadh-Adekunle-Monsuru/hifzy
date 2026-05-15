@@ -43,6 +43,9 @@ export const logout = async () => {
  * 3. Automatic retry of the original request after refresh
  * 4. Redirection to login on invalid tokens
  */
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
   const accessToken = getToken();
 
@@ -55,55 +58,81 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
   let response = await fetch(url, { ...options, headers });
 
   if (response.status === 401) {
-    // Clone response to read body without consuming the original stream
     const errorResponse = response.clone();
     try {
       const errorData = await errorResponse.json();
 
       if (errorData.detail === "token_expired") {
-        const refreshToken = getRefreshToken();
-        if (!refreshToken) {
-          // await logout();
-          console.log("token expired but no refresh token");
+        // If already refreshing, wait for the existing promise
+        if (isRefreshing && refreshPromise) {
+          const success = await refreshPromise;
+          if (success) {
+            const newToken = getToken();
+            const retryHeaders = {
+              ...headers,
+              Authorization: `Bearer ${newToken}`,
+            };
+            return fetch(url, { ...options, headers: retryHeaders });
+          }
           return response;
         }
 
-        // Attempt to refresh the token
-        const refreshResponse = await fetch(
-          "https://quran-be-59779bf2.fastapicloud.dev/auth/refresh",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh_token: refreshToken }),
-          },
-        );
+        // Start a new refresh process
+        isRefreshing = true;
+        refreshPromise = (async () => {
+          const refreshToken = getRefreshToken();
+          if (!refreshToken) {
+            isRefreshing = false;
+            refreshPromise = null;
+            return false;
+          }
 
-        if (refreshResponse.ok) {
-          const data = await refreshResponse.json();
-          setTokens(data.access_token, data.refresh_token);
+          try {
+            const refreshResponse = await fetch(
+              "https://quran-be-59779bf2.fastapicloud.dev/auth/refresh",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh_token: refreshToken }),
+              },
+            );
 
-          // Retry the original request with the new token
+            if (refreshResponse.ok) {
+              const data = await refreshResponse.json();
+              setTokens(data.access_token, data.refresh_token);
+              return true;
+            }
+          } catch (e) {
+            console.error("Refresh attempt failed", e);
+          } finally {
+            isRefreshing = false;
+            refreshPromise = null;
+          }
+          return false;
+        })();
+
+        const success = await refreshPromise;
+        if (success) {
+          const newToken = getToken();
           const retryHeaders = {
             ...headers,
-            Authorization: `Bearer ${data.access_token}`,
+            Authorization: `Bearer ${newToken}`,
           };
           return fetch(url, { ...options, headers: retryHeaders });
         } else {
-          // If refresh fails, log out
-          // await logout();
-          console.log("refresh token expired, cant retry");
-          return refreshResponse;
+          // If refresh fails completely, logout
+          await logout();
+          return response;
         }
       } else if (
         errorData.detail === "invalid_token" ||
         errorData.detail === "invalid_refresh_token"
       ) {
-        // await logout();
         console.log("invalid token, ", errorData);
+        await logout();
         return response;
       }
     } catch (e) {
-      // If JSON parsing fails, just return the original 401 response
       return response;
     }
   }

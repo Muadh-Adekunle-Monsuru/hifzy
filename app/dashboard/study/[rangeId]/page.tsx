@@ -10,6 +10,8 @@ import { ActiveSession } from "../_components/ActiveSession";
 import { EmptySession } from "../_components/EmptySession";
 import { ReadySession } from "../_components/ReadySession";
 import { SessionComplete } from "../_components/SessionComplete";
+import { getToken } from "@/lib/utils/auth";
+import { useRouter } from "next/navigation";
 
 export default function StudyPage({
   params,
@@ -17,10 +19,22 @@ export default function StudyPage({
   params: Promise<{ rangeId: string }>;
 }) {
   const rangeId = use(params).rangeId;
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
   const [cards, setCards] = useState<Cards[]>([]);
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+
   useEffect(() => {
+    if (!getToken()) {
+      router.replace("/login");
+      return;
+    }
+    setAuthorized(true);
+  }, [router]);
+
+  useEffect(() => {
+    if (!authorized) return;
     const fetchRanges = async () => {
       try {
         const db = await initDatabase();
@@ -38,7 +52,7 @@ export default function StudyPage({
     };
 
     fetchRanges();
-  }, [rangeId]);
+  }, [rangeId, authorized]);
 
   const formattedCards = useMemo(() => {
     return cards.map((card) => ({
@@ -112,6 +126,14 @@ export default function StudyPage({
     setIsSessionActive(true);
     setShowAnswer(false);
   };
+
+  if (!authorized) {
+    return (
+      <div className="bg-[#131314] h-screen flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="dark bg-[#131314] text-white min-h-screen flex flex-col ">

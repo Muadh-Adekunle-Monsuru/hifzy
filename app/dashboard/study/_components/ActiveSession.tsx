@@ -4,7 +4,7 @@ import { Card } from "@/hooks/useSpacedRepetition";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SessionProgress } from "./session/SessionProgress";
 import { FrontCard } from "./session/FrontCard";
 import { RecordingInteraction } from "./session/RecordingInteraction";
@@ -38,10 +38,26 @@ export function ActiveSession({
   const router = useRouter();
   const [playmode, setPlayMode] = useState("");
   const [userAudio, setUserAudio] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const togglePlayMode = (value: string) => {
     setPlayMode(value);
   };
+
+  const variants = isMobile
+    ? {
+        hidden: { opacity: 1, y: 0 },
+        visible: { opacity: 1, y: 0 },
+        exit: { opacity: 1, y: 0 },
+      }
+    : softFade;
 
   return (
     <div className="flex flex-col gap-5 md:w-5xl mx-auto py-20">
@@ -63,18 +79,18 @@ export function ActiveSession({
       <div className="w-full flex flex-col gap-3">
         <FrontCard currentCard={currentCard} />
 
-        <div className="transition-all duration-300 ease-in-out">
+        <div className={isMobile ? "" : "transition-all duration-300 ease-in-out"}>
           <AnimatePresence mode="wait">
             {!showAnswer ? (
             <RecordingInteraction
                 setShowAnswer={setShowAnswer}
-                variants={softFade}
+                variants={variants}
                 setUserAudio={setUserAudio}
               />
             ) : (
               <motion.div
                 key="answer-section"
-                variants={softFade}
+                variants={variants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"

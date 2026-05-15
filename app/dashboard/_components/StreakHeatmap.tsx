@@ -43,9 +43,9 @@ export function StreakHeatmap() {
             timeline
           </span>
         </div>
-        <div className="overflow-x-hidden pb-2">
-          <div className="flex justify-center gap-1 min-w-[600px]">
-            <div className="grid grid-rows-5 grid-flow-col gap-3">
+        <div className="overflow-x-hidden h-full w-full">
+          <div className="flex justify-center items-center">
+            <div className="grid grid-rows-5 grid-flow-col gap-3 w-full">
               {loading
                 ? Array(numDays)
                     .fill(0)
@@ -58,7 +58,7 @@ export function StreakHeatmap() {
                 : cells.map((cls, idx) => (
                     <div
                       key={idx}
-                      className={`bg-neutral-800 size-4 border ${cls}`}
+                      className={`bg-neutral-800 aspect-square h-full  border ${cls}`}
                     ></div>
                   ))}
             </div>

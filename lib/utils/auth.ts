@@ -63,7 +63,8 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
       if (errorData.detail === "token_expired") {
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
-          await logout();
+          // await logout();
+          console.log("token expired but no refresh token");
           return response;
         }
 
@@ -89,14 +90,16 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
           return fetch(url, { ...options, headers: retryHeaders });
         } else {
           // If refresh fails, log out
-          await logout();
+          // await logout();
+          console.log("refresh token expired, cant retry");
           return refreshResponse;
         }
       } else if (
         errorData.detail === "invalid_token" ||
         errorData.detail === "invalid_refresh_token"
       ) {
-        await logout();
+        // await logout();
+        console.log("invalid token, ", errorData);
         return response;
       }
     } catch (e) {

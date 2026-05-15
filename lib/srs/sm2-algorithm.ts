@@ -17,6 +17,7 @@ export interface CardState {
 }
 
 export interface ReviewResult {
+  repetitions: number;
   quality: number; // 0-5
   interval: number; // New interval
   easeFactor: number; // New ease factor
@@ -44,10 +45,10 @@ export class SM2 {
    */
   static calculateNextReview(
     currentState: CardState,
-    quality: number
+    quality: number,
   ): ReviewResult {
     if (quality < 0 || quality > 5) {
-      throw new Error('Quality must be between 0 and 5');
+      throw new Error("Quality must be between 0 and 5");
     }
 
     // Ensure quality is between 0 and 5
@@ -56,8 +57,7 @@ export class SM2 {
     // Calculate new ease factor using SM-2 formula
     // EF' = EF + (0.1 - (5 - q) × (0.08 + (5 - q) × 0.02))
     let newEaseFactor =
-      currentState.easeFactor +
-      (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+      currentState.easeFactor + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
 
     // Ensure minimum ease factor
     newEaseFactor = Math.max(this.MIN_EASE_FACTOR, newEaseFactor);
@@ -131,7 +131,7 @@ export class SM2 {
   static daysUntilReview(cardState: CardState): number {
     const msPerDay = 24 * 60 * 60 * 1000;
     const daysRemaining = Math.ceil(
-      (cardState.nextReviewDate - Date.now()) / msPerDay
+      (cardState.nextReviewDate - Date.now()) / msPerDay,
     );
     return Math.max(0, daysRemaining);
   }
@@ -143,9 +143,9 @@ export class SM2 {
     const days = this.daysUntilReview(cardState);
 
     if (days === 0) {
-      return 'Due today';
+      return "Due today";
     } else if (days === 1) {
-      return 'Due tomorrow';
+      return "Due tomorrow";
     } else {
       return `Due in ${days} days`;
     }
@@ -155,10 +155,10 @@ export class SM2 {
    * Get statistics about ease factor
    */
   static getEaseFactorLabel(easeFactor: number): string {
-    if (easeFactor <= 1.5) return 'Very Hard';
-    if (easeFactor <= 2.0) return 'Hard';
-    if (easeFactor <= 2.5) return 'Medium';
-    if (easeFactor <= 3.0) return 'Easy';
-    return 'Very Easy';
+    if (easeFactor <= 1.5) return "Very Hard";
+    if (easeFactor <= 2.0) return "Hard";
+    if (easeFactor <= 2.5) return "Medium";
+    if (easeFactor <= 3.0) return "Easy";
+    return "Very Easy";
   }
 }

@@ -1,18 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import "./dashboard.css";
 
-import { DashboardHeader } from "./_components/DashboardHeader";
-import { MasteryHeatmap } from "./_components/MasteryHeatmap";
-import { CurrentStreak } from "./_components/CurrentStreak";
-import { RecentRanges } from "./_components/RecentRanges";
-import { RetentionStats } from "./_components/RetentionStats";
-import { DailyTip } from "./_components/DailyTip";
-import { TopAppBar } from "@/components/landing/TopAppBar";
 import { Footer } from "@/components/landing/Footer";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { TopAppBar } from "@/components/landing/TopAppBar";
 import { Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { CurrentStreak } from "./_components/CurrentStreak";
+import { DailyTip } from "./_components/DailyTip";
+import { DashboardHeader } from "./_components/DashboardHeader";
+import { MoonCard } from "./_components/MoonCard";
+import { RecentRanges } from "./_components/RecentRanges";
+import { StreakHeatmap } from "./_components/StreakHeatmap";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -45,11 +45,11 @@ export default function DashboardPage() {
           <DashboardHeader />
 
           {/* Bento Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
-            <MasteryHeatmap />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+            <StreakHeatmap />
             <CurrentStreak />
             <RecentRanges />
-            <RetentionStats />
+            <MoonCard />
             <DailyTip />
           </div>
         </div>

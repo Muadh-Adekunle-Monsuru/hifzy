@@ -17,13 +17,19 @@ export interface Card {
 }
 
 export function useSpacedRepetition(cards: Card[]) {
+  const [sessionQueue, setSessionQueue] = useState<Card[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [reviewHistory, setReviewHistory] = useState<ReviewResult[]>([]);
 
-  // Get cards due for review
-  const cardsDue = cards.filter((card) => SM2.isDue(card as CardState));
+  // Initialize session queue when cards are provided
+  useEffect(() => {
+    if (cards.length > 0 && sessionQueue.length === 0) {
+      const due = cards.filter((card) => SM2.isDue(card as CardState));
+      setSessionQueue(due);
+    }
+  }, [cards, sessionQueue.length]);
 
-  const currentCard = cardsDue[currentCardIndex];
+  const currentCard = sessionQueue[currentCardIndex];
 
   const submitReview = useCallback(
     (quality: number) => {
@@ -35,23 +41,24 @@ export function useSpacedRepetition(cards: Card[]) {
       // Add to review history
       setReviewHistory((prev) => [...prev, result]);
 
-      // Move to next card
-      if (currentCardIndex < cardsDue.length - 1) {
-        setCurrentCardIndex((prev) => prev + 1);
-      } else {
-        // Session complete
-        setCurrentCardIndex(0);
+      // If card was failed (quality < 3), add it back to the end of the queue
+      if (quality < 3) {
+        setSessionQueue((prev) => [...prev, currentCard]);
       }
+
+      // Move to next card in the queue
+      setCurrentCardIndex((prev) => prev + 1);
     },
-    [currentCard, currentCardIndex, cardsDue.length],
+    [currentCard],
   );
 
   const resetSession = useCallback(() => {
     setCurrentCardIndex(0);
     setReviewHistory([]);
+    setSessionQueue([]); // This will trigger re-initialization from props
   }, []);
 
-  const isSessionComplete = currentCardIndex >= cardsDue.length;
+  const isSessionComplete = sessionQueue.length > 0 && currentCardIndex >= sessionQueue.length;
 
   const sessionStats = {
     totalReviewed: reviewHistory.length,
@@ -65,7 +72,7 @@ export function useSpacedRepetition(cards: Card[]) {
 
   return {
     currentCard,
-    cardsDue,
+    cardsDue: sessionQueue,
     currentCardIndex,
     reviewHistory,
     submitReview,

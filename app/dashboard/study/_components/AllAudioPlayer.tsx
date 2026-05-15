@@ -31,10 +31,10 @@ export default function AllAudioPlayer({
 
   // Sync internal isPlaying with external isSelected
   useEffect(() => {
-    if (!isSelected && isPlaying) {
+    if (!isSelected) {
       setIsPlaying(false);
     }
-  }, [isSelected, isPlaying]);
+  }, [isSelected]);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -72,14 +72,14 @@ export default function AllAudioPlayer({
   }, [currentIndex, isPlaying, isSelected, answerAudios]);
 
   const togglePlayPause = () => {
-    if (!isPlaying) {
-      // Starting playback
-      togglePlayMode("reciter-audio");
-      setIsPlaying(true);
-    } else {
+    if (isSelected && isPlaying) {
       // Stopping playback
       togglePlayMode("");
       setIsPlaying(false);
+    } else {
+      // Starting playback
+      togglePlayMode("reciter-audio");
+      setIsPlaying(true);
     }
   };
 

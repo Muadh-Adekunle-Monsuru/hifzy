@@ -56,7 +56,7 @@ export function RecentRanges() {
         <div
           key={range.id}
           onClick={() => router.push(`/dashboard/study/${range.id}`)}
-          className="col-span-6 md:col-span-2 bento-card bg-[#1c1b1b] p-5 group cursor-pointer active:scale-95 transition-all"
+          className="col-span-6 md:col-span-2 bento-card bg-[#1c1b1b] p-5 py-10 group cursor-pointer active:scale-95 transition-all"
         >
           <div className="flex justify-between items-center mb-5">
             <span className="font-medium text-muted-foreground group-hover:text-primary text-xs ">

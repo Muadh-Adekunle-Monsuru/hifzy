@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Hifz Revision Pro - Quranic Memorization Learning Platform",
+  title: "Hifzy -Quranic Memorization Learning Platform",
   description:
     "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking. Offline-first app for Hifz students.",
   icons: {

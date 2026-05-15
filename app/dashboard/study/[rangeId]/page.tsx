@@ -62,16 +62,6 @@ export default function StudyPage({
     }));
   }, [cards]);
 
-  const handleRating = (quality: number) => {
-    submitReview(quality);
-    setShowAnswer(false); // Reset to "Front" for the next card
-  };
-
-  const startSession = () => {
-    setIsSessionActive(true);
-    setShowAnswer(false);
-  };
-
   const {
     currentCard,
     submitReview,
@@ -82,6 +72,52 @@ export default function StudyPage({
     reviewHistory,
     sessionStats,
   } = useSpacedRepetition(formattedCards);
+
+  const handleRating = async (quality: number) => {
+    if (!currentCard) return;
+
+    try {
+      const db = await initDatabase();
+      const cardRecord = await db.get<Cards>("cards").find(currentCard.id);
+
+      const nextReview = SM2.calculateNextReview(
+        {
+          interval: currentCard.interval,
+          easeFactor: currentCard.easeFactor,
+          repetitions: currentCard.repetitions,
+          nextReviewDate: currentCard.nextReviewDate,
+          lastReviewDate: 0,
+        },
+        quality,
+      );
+
+      await db.write(async () => {
+        await cardRecord.update((record) => {
+          record.interval = nextReview.interval;
+          record.easeFactor = nextReview.easeFactor;
+          record.repetitions = nextReview.repetitions;
+          record.nextReviewDate = new Date(nextReview.nextReviewDate);
+          record.isMastered = nextReview.interval > 30; // Mastered if interval > 30 days
+        });
+      });
+
+      // Update local cards state to reflect changes
+      setCards((prev) =>
+        prev.map((c) => (c.id === cardRecord.id ? cardRecord : c)),
+      );
+
+      submitReview(quality);
+      setShowAnswer(false);
+    } catch (error) {
+      toast.error("Failed to save progress");
+      console.error("Failed to update card:", error);
+    }
+  };
+
+  const startSession = () => {
+    setIsSessionActive(true);
+    setShowAnswer(false);
+  };
 
   return (
     <div className="dark bg-[#131314] text-white min-h-screen flex flex-col ">

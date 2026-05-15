@@ -59,27 +59,6 @@ export const dbSchema = appSchema({
       ],
     }),
     tableSchema({
-      name: "session_reviews",
-      columns: [
-        { name: "session_id", type: "string" },
-        { name: "card_id", type: "string" },
-        { name: "quality_grade", type: "number" }, // 0-5 scale
-        { name: "accuracy_score", type: "number", isOptional: true }, // 0-100%
-        { name: "timestamp", type: "number" },
-      ],
-    }),
-    tableSchema({
-      name: "audio_recordings",
-      columns: [
-        { name: "verse_id", type: "string" },
-        { name: "session_review_id", type: "string", isOptional: true },
-        { name: "audio_blob_url", type: "string" }, // data URL or indexeddb reference
-        { name: "duration", type: "number" }, // seconds
-        { name: "accuracy_score", type: "number", isOptional: true }, // 0-100%
-        { name: "created_at", type: "number" },
-      ],
-    }),
-    tableSchema({
       name: "progress",
       columns: [
         { name: "total_verses", type: "number" },
@@ -91,6 +70,13 @@ export const dbSchema = appSchema({
         { name: "last_study_date", type: "number", isOptional: true },
         { name: "total_study_minutes", type: "number" },
         { name: "updated_at", type: "number" },
+      ],
+    }),
+    tableSchema({
+      name: "visitation_logs",
+      columns: [
+        { name: "visit_date", type: "number" },
+        { name: "created_at", type: "number" },
       ],
     }),
   ],

@@ -59,3 +59,29 @@ export async function getAyahsBySurah(
     return [];
   }
 }
+
+export async function saveRange(startRange: string, endRange: string) {
+  const token = getToken();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  try {
+    const response = await fetch(
+      `https://quran-be-59779bf2.fastapicloud.dev/goals`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          range_start: startRange,
+          range_end: endRange,
+          mushaf_id: 4,
+          timezone: timeZone,
+        }),
+      },
+    );
+    const data = await response.json();
+  } catch (e) {
+    console.error("Failed to fetch data from the server, please re-login");
+  }
+}

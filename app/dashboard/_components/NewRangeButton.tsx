@@ -9,7 +9,7 @@ const NewRangeButton = forwardRef<
     <div
       ref={ref}
       {...props}
-      className={`col-span-6 md:col-span-2 border-2 border-dashed border-outline-variant p-5 flex flex-col items-center justify-center text-center gap-3 hover:bg-[#2a2a2b] transition-colors cursor-pointer group h-40 select-none ${props.className || ""}`}
+      className={`col-span-6 md:col-span-2 border-2 border-dashed border-outline-variant p-5  flex flex-col items-center justify-center text-center gap-3 hover:bg-[#2a2a2b] transition-colors cursor-pointer group h-52 select-none ${props.className || ""}`}
     >
       <PlusCircle className="text-muted-foreground" />
       <div>

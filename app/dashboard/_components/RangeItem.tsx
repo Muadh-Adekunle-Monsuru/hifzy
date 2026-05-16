@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Range } from "@/lib/database/models/Range";
 import { Cards } from "@/lib/database/models/Cards";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Q } from "@nozbe/watermelondb";
 
@@ -12,7 +12,6 @@ interface RangeItemProps {
 }
 
 export default function RangeItem({ range }: RangeItemProps) {
-  const router = useRouter();
   const [dueCount, setDueCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -47,9 +46,9 @@ export default function RangeItem({ range }: RangeItemProps) {
   }, [range]);
 
   return (
-    <div
-      onClick={() => router.push(`/dashboard/study/${range.id}`)}
-      className="col-span-6 md:col-span-2 bento-card bg-[#1c1b1b] p-5 py-10 group cursor-pointer active:scale-95 transition-all"
+    <Link
+      href={`/dashboard/study/${range.id}`}
+      className="col-span-6 md:col-span-2 bento-card bg-[#1c1b1b] p-5 py-10 group cursor-pointer active:scale-95 transition-all block"
     >
       <div className="flex justify-between items-center mb-5">
         <span className="font-medium text-muted-foreground group-hover:text-primary text-xs ">
@@ -91,6 +90,6 @@ export default function RangeItem({ range }: RangeItemProps) {
           ></div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

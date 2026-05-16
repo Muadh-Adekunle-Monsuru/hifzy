@@ -10,21 +10,17 @@
     border-color: #ffffff;
   }
 }
-.heatmap-cell {
-  width: 12px;
-  height: 12px;
-  border: 1px solid #353534;
-}
-.heatmap-cell.active-1 {
+
+.active-1 {
   background-color: #2a2a2a;
 }
-.heatmap-cell.active-2 {
+.active-2 {
   background-color: #474747;
 }
-.heatmap-cell.active-3 {
+.active-3 {
   background-color: #8e9192;
 }
-.heatmap-cell.active-4 {
+.active-4 {
   background-color: #ffffff;
 }
 

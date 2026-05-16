@@ -12,19 +12,17 @@ export function Footer() {
       <div className="flex gap-4 font-label-caps text-label-caps">
         <a
           className="text-primary/50 hover:text-primary transition-colors underline"
-          href="#"
+          href="https://drive.google.com/file/d/1QZZY_ZurzmU8XxdR88Hi7LtAYEBbQwzZ/view?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Privacy
         </a>
         <a
           className="text-primary/50 hover:text-primary transition-colors underline"
-          href="#"
-        >
-          Support
-        </a>
-        <a
-          className="text-primary/50 hover:text-primary transition-colors underline"
-          href="#"
+          href="https://github.com/Muadh-Adekunle-Monsuru/hifzy/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Open Source
         </a>

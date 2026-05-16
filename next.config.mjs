@@ -1,3 +1,5 @@
+import { withSerwist } from "@serwist/turbopack";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -10,4 +12,4 @@ const nextConfig = {
   allowedDevOrigins: ["192.168.0.198", "192.168.0.162"],
 };
 
-export default nextConfig;
+export default withSerwist(nextConfig);

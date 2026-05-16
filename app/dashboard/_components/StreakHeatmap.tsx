@@ -11,6 +11,7 @@ export function StreakHeatmap() {
       try {
         await initDatabase();
         const data = await getReviewCountsByDay(100);
+        console.log("Heatmap history data:", Array.from(data.entries()));
         setHistory(data);
       } catch (error) {
         console.error("Error fetching heatmap data:", error);
@@ -21,7 +22,7 @@ export function StreakHeatmap() {
     fetchData();
   }, []);
 
-  // Generate grid: 10 weeks * 7 days = 70 cells
+  // Generate grid: 100 days
   const numDays = 100;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -37,9 +38,20 @@ export function StreakHeatmap() {
   // We want the last cell to be today
   // So index i represents today - (numDays - 1 - i)
   const cells = Array.from({ length: numDays }, (_, i) => {
-    const date = new Date(today.getTime() - (numDays - 1 - i) * 86400000);
-    const count = history.get(date.getTime()) ?? 0;
-    return getIntensityClass(count);
+    const date = new Date(today);
+    date.setDate(date.getDate() - (numDays - 1 - i));
+    const midnight = date.getTime();
+    const count = history.get(midnight) ?? 0;
+    
+    if (i === numDays - 1) {
+      console.log("Today cell:", { midnight, count, today: today.getTime() });
+    }
+    
+    return {
+      cls: getIntensityClass(count),
+      date: date.toLocaleDateString(),
+      count
+    };
   });
 
   return (
@@ -63,10 +75,11 @@ export function StreakHeatmap() {
                         className="size-5 bg-neutral-900 animate-pulse"
                       ></div>
                     ))
-                : cells.map((cls, idx) => (
+                : cells.map((cell, idx) => (
                     <div
                       key={idx}
-                      className={`bg-neutral-800 aspect-square h-full  border ${cls}`}
+                      title={`${cell.date}: ${cell.count} reviews`}
+                      className={`bg-neutral-800 aspect-square h-full border ${cell.cls}`}
                     ></div>
                   ))}
             </div>

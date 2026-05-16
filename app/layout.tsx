@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   description:
     "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking. Offline-first app for Hifz students.",
   openGraph: {
-    title: "Hifzy - Quranic Memorization Learning Platform",
+    title: "Hifzy - Quranic Memorization Platform",
     description:
       "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking. Offline-first app for Hifz students.",
     url: "https://hifzy-srs.vercel.app",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hifzy - Quranic Memorization Learning Platform",
+    title: "Hifzy - Quranic Memorization Platform",
     description:
       "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking.",
     images: [

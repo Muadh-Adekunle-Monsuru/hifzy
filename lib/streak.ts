@@ -1,6 +1,7 @@
 import { getDatabase } from "./database/init";
 import { Visitation } from "./database/models/Visitation";
 import { Cards } from "./database/models/Cards";
+import { ReviewLog } from "./database/models/ReviewLog";
 import { Q } from "@nozbe/watermelondb";
 
 const getMidnight = (date: Date) => {
@@ -133,16 +134,17 @@ export async function getVisitationHistory(days: number = 60): Promise<number[]>
 export async function getReviewCountsByDay(days: number = 100): Promise<Map<number, number>> {
   try {
     const db = getDatabase();
-    const startDate = getMidnight(new Date()).getTime() - days * 86400000;
+    const today = getMidnight(new Date());
+    const startDate = today.getTime() - days * 86400000;
 
-    const cards = await db.get<Cards>("cards")
-      .query(Q.where("last_review_date", Q.gte(startDate)))
+    const logs = await db.get<ReviewLog>("review_logs")
+      .query(Q.where("reviewed_at", Q.gte(startDate)))
       .fetch();
 
     const counts = new Map<number, number>();
-    for (const card of cards) {
-      if (card.lastReviewDate === null) continue;
-      const midnight = getMidnight(card.lastReviewDate).getTime();
+    for (const log of logs) {
+      if (log.reviewedAt === null) continue;
+      const midnight = getMidnight(log.reviewedAt).getTime();
       counts.set(midnight, (counts.get(midnight) ?? 0) + 1);
     }
 

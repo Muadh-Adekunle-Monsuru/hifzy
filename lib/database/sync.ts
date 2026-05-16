@@ -3,7 +3,7 @@ import { getDatabase } from "./init";
 import { apiFetch } from "../utils/auth";
 import { surahDetail } from "@/app/dashboard/_components/SurahDetails";
 
-const API_URL = "https://quran-be-59779bf2.fastapicloud.dev/sync";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/sync`;
 
 export async function syncDatabase() {
   const database = getDatabase();
@@ -20,7 +20,6 @@ export async function syncDatabase() {
       }
 
       const { changes: serverChanges, timestamp } = await response.json();
-      console.log(serverChanges);
       // Map server tables to local tables
       const mappedChanges: any = {
         range: {
@@ -47,14 +46,27 @@ export async function syncDatabase() {
     },
     pushChanges: async ({ changes, lastPulledAt }) => {
       // Step 1: Push Decks (Ranges)
+      // Track page-mode range IDs that are skipped (unsupported server-side)
+      const skippedPageModeRangeIds = new Set<string>();
+
       const deckChanges: any = {
         decks: {
-          created: (changes.range?.created || []).map(
-            mapLocalRangeToServerDeck,
-          ),
-          updated: (changes.range?.updated || []).map(
-            mapLocalRangeToServerDeck,
-          ),
+          created: (changes.range?.created || []).flatMap((range: any) => {
+            const mapped = mapLocalRangeToServerDeck(range);
+            if (!mapped) {
+              skippedPageModeRangeIds.add(range.id);
+              return [];
+            }
+            return [mapped];
+          }),
+          updated: (changes.range?.updated || []).flatMap((range: any) => {
+            const mapped = mapLocalRangeToServerDeck(range);
+            if (!mapped) {
+              skippedPageModeRangeIds.add(range.id);
+              return [];
+            }
+            return [mapped];
+          }),
           deleted: changes.range?.deleted || [],
         },
         cards: { created: [], updated: [], deleted: [] },
@@ -78,14 +90,45 @@ export async function syncDatabase() {
       }
 
       // Step 2: Push Cards
+      // Collect card IDs belonging to skipped page-mode ranges so we can
+      // also exclude their review-log entries
+      const skippedCardIds = new Set<string>();
+
+      const filteredCardsCreated = (changes.cards?.created || []).filter(
+        (card: any) => {
+          if (skippedPageModeRangeIds.has(card.range_id)) {
+            skippedCardIds.add(card.id);
+            return false;
+          }
+          return true;
+        },
+      );
+      const filteredCardsUpdated = (changes.cards?.updated || []).filter(
+        (card: any) => {
+          if (skippedPageModeRangeIds.has(card.range_id)) {
+            skippedCardIds.add(card.id);
+            return false;
+          }
+          return true;
+        },
+      );
+
       const cardChanges: any = {
         decks: { created: [], updated: [], deleted: [] },
         cards: {
-          created: (changes.cards?.created || []).map(mapLocalCardToServerCard),
-          updated: (changes.cards?.updated || []).map(mapLocalCardToServerCard),
+          created: filteredCardsCreated.map(mapLocalCardToServerCard),
+          updated: filteredCardsUpdated.map(mapLocalCardToServerCard),
           deleted: changes.cards?.deleted || [],
         },
-        review_logs: { created: [], updated: [], deleted: [] },
+        review_logs: {
+          created: (changes.review_logs?.created || []).filter(
+            (log: any) => !skippedCardIds.has(log.card_id),
+          ).map(mapLocalReviewLogToServer),
+          updated: (changes.review_logs?.updated || []).filter(
+            (log: any) => !skippedCardIds.has(log.card_id),
+          ).map(mapLocalReviewLogToServer),
+          deleted: [],
+        },
         preferences: { created: [], updated: [], deleted: [] },
       };
 
@@ -148,7 +191,10 @@ function mapServerDeckToLocalRange(deck: any) {
   };
 }
 
-function mapLocalRangeToServerDeck(range: any) {
+function mapLocalRangeToServerDeck(range: any): object | null {
+  // page-mode ranges require server-side resolution; skip until supported
+  if (!range.start_surah_number) return null;
+
   const isSurahMode = !!range.start_surah_number;
   return {
     id: range.id,
@@ -190,11 +236,23 @@ function mapLocalCardToServerCard(card: any) {
     arabic_text: card.arabic_text,
     audio_url: card.audio_url,
     answer_verses: card.answer_verses,
-    stability: 0,
+    stability: card.interval || 0,
     difficulty: card.ease_factor || 250,
     reps: card.repetitions || 0,
     lapses: 0,
     state: card.is_mastered ? "mastered" : "learning",
     due_date: new Date(card.next_review_date).toISOString(),
+  };
+}
+
+// Helpers for Review Logs
+function mapLocalReviewLogToServer(log: any) {
+  return {
+    id: log.id,
+    card_id: log.card_id,
+    grade: log.grade,
+    elapsed_days: log.elapsed_days,
+    scheduled_days: log.scheduled_days,
+    reviewed_at: new Date(log.reviewed_at).toISOString(),
   };
 }

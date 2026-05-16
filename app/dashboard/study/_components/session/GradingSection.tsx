@@ -7,22 +7,22 @@ interface GradingSectionProps {
 const GRADES = [
   {
     value: 0,
-    label: "Hard (Again)",
+    label: "Again",
     color: "hover:bg-yellow-900/50 border-yellow-900",
   },
   {
     value: 2,
-    label: "Good",
+    label: "Hard",
     color: "hover:bg-blue-900/50 border-blue-900",
   },
   {
     value: 4,
-    label: "Easy",
+    label: "Good",
     color: "hover:bg-green-900/50 border-green-900",
   },
   {
     value: 5,
-    label: "Perfect",
+    label: "Easy",
     color: "hover:bg-emerald-900/50 border-emerald-900",
   },
 ];

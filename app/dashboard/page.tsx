@@ -2,6 +2,7 @@
 import { useState } from "react";
 import "./dashboard.css";
 
+import { getToken } from "@/lib/utils/auth";
 import { Footer } from "@/components/landing/Footer";
 import { TopAppBar } from "@/components/landing/TopAppBar";
 import { Loader } from "lucide-react";
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = getToken();
 
     if (!token) {
       router.replace("/login");

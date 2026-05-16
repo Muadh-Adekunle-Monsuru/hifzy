@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { getVisitationHistory } from "@/lib/streak";
+import { getReviewCountsByDay } from "@/lib/streak";
 import { initDatabase } from "@/lib/database/init";
 
 export function StreakHeatmap() {
-  const [history, setHistory] = useState<number[]>([]);
+  const [history, setHistory] = useState<Map<number, number>>(new Map());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
         await initDatabase();
-        const data = await getVisitationHistory(100); // ~10 weeks
+        const data = await getReviewCountsByDay(100);
         setHistory(data);
       } catch (error) {
         console.error("Error fetching heatmap data:", error);
@@ -26,12 +26,20 @@ export function StreakHeatmap() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  const getIntensityClass = (count: number): string => {
+    if (count === 0) return "";
+    if (count <= 3) return "active-1";
+    if (count <= 8) return "active-2";
+    if (count <= 15) return "active-3";
+    return "active-4";
+  };
+
   // We want the last cell to be today
   // So index i represents today - (numDays - 1 - i)
   const cells = Array.from({ length: numDays }, (_, i) => {
     const date = new Date(today.getTime() - (numDays - 1 - i) * 86400000);
-    const hasVisited = history.includes(date.getTime());
-    return hasVisited ? "active-4" : "";
+    const count = history.get(date.getTime()) ?? 0;
+    return getIntensityClass(count);
   });
 
   return (
@@ -67,7 +75,7 @@ export function StreakHeatmap() {
       </div>
       <div className="mt-5 flex justify-between items-center">
         <span className="text-gray-300 text-[12px] uppercase">
-          DAYS VISITED IN THE LAST 10 WEEKS
+          REVIEWS PER DAY OVER THE LAST 100 DAYS
         </span>
         <div className="flex items-center gap-3">
           <span className="text-gray-300 text-[10px]">LESS</span>

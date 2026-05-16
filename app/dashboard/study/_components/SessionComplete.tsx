@@ -6,6 +6,17 @@ export function SessionComplete({
 }: {
   sessionStats: SessionStats;
 }) {
+  const qualityLabels: Record<number, string> = {
+    0: "Poor",
+    1: "Poor",
+    2: "Hard",
+    3: "Okay",
+    4: "Good",
+    5: "Perfect",
+  };
+  const avgQualityLabel =
+    qualityLabels[Math.min(5, Math.round(sessionStats.avgQuality))] ?? "—";
+
   return (
     <div className="w-full max-w-2xl bento-cell  bg-[#1b1b1f] relative overflow-hidden flex flex-col items-center p-5 gap-3 py-10 ">
       <h2 className="text-4xl font-bold mb-2">Session Complete!</h2>
@@ -21,7 +32,7 @@ export function SessionComplete({
         </div>
         <div className=" flex items-center flex-col p-5">
           <p className="text-3xl font-bold text-primary mb-2">
-            {Math.floor(sessionStats.avgQuality)}
+            {avgQualityLabel}
           </p>
           <p className="text-muted-foreground">Avg Quality</p>
         </div>

@@ -2,6 +2,7 @@
 import { useSpacedRepetition } from "@/hooks/useSpacedRepetition";
 import { initDatabase } from "@/lib/database/init";
 import { Cards } from "@/lib/database/models/Cards";
+import { ReviewLog } from "@/lib/database/models/ReviewLog";
 import { SM2 } from "@/lib/srs/sm2-algorithm";
 import { Q } from "@nozbe/watermelondb";
 import { use, useEffect, useMemo, useState } from "react";
@@ -105,7 +106,19 @@ export default function StudyPage({
           record.easeFactor = nextReview.easeFactor;
           record.repetitions = nextReview.repetitions;
           record.nextReviewDate = new Date(nextReview.nextReviewDate);
+          record.lastReviewDate = new Date();
           record.isMastered = nextReview.interval > 30; // Mastered if interval > 30 days
+        });
+
+        await db.get<ReviewLog>("review_logs").create((log) => {
+          log.cardId = currentCard.id;
+          log.grade = quality;
+          log.elapsedDays = Math.floor(
+            (Date.now() - (currentCard.lastReviewDate || Date.now())) / 86400000,
+          );
+          log.scheduledDays = nextReview.interval;
+          log.reviewedAt = new Date();
+          log.createdAt = new Date();
         });
       });
 

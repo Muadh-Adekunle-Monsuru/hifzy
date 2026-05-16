@@ -5,7 +5,6 @@ import RangeDialog from "./RangeDialog";
 import { initDatabase } from "@/lib/database/init";
 import { Range } from "@/lib/database/models/Range";
 import { useRouter } from "next/navigation";
-import { randomBytes } from "crypto";
 import { ChevronRight, History } from "lucide-react";
 import RangeItem from "./RangeItem";
 

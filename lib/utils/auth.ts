@@ -22,7 +22,7 @@ export const logout = async () => {
   const token = getToken();
   if (token) {
     try {
-      await fetch("https://quran-be-59779bf2.fastapicloud.dev/auth/logout", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,7 +80,7 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
 
           try {
             const refreshResponse = await fetch(
-              "https://quran-be-59779bf2.fastapicloud.dev/auth/refresh",
+              `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

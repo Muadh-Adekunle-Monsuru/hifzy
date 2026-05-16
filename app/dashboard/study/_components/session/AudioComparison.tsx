@@ -63,7 +63,7 @@ export function AudioComparison({
   return (
     <div className="col-span-12 md:col-span-4 bento-cell p-5">
       <p className="text-center mb-2 font-medium text-muted-foreground uppercase font-mono">
-        Audio Comparision
+        Audio Comparison
       </p>
       <div className="flex justify-around gap-5 border-t border-white/20 pt-5">
         <div

@@ -7,6 +7,7 @@ import { dbSchema } from "./schema";
 import { Range } from "./models/Range";
 import { Cards } from "./models/Cards";
 import { Visitation } from "./models/Visitation";
+import { ReviewLog } from "./models/ReviewLog";
 
 let db: Database | null = null;
 
@@ -20,12 +21,12 @@ export async function initDatabase(): Promise<Database> {
       schema: dbSchema,
       useWebWorker: false, // Set to true for better performance
       useIncrementalIndexedDB: true,
-      dbName: "my_new_db",
+      dbName: "hifzy_db",
     });
 
     db = new Database({
       adapter,
-      modelClasses: [Range, Cards, Visitation],
+      modelClasses: [Range, Cards, Visitation, ReviewLog],
     });
 
     return db;

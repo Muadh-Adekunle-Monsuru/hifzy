@@ -23,7 +23,7 @@ export function DailyVerse() {
     const fetchDailyVerse = async () => {
       try {
         const response = await apiFetch(
-          "https://quran-be-59779bf2.fastapicloud.dev/content/daily-verse",
+          `${process.env.NEXT_PUBLIC_API_URL}/content/daily-verse`,
         );
         if (response.ok) {
           const result = await response.json();

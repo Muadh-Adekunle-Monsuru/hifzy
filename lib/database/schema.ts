@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export const dbSchema = appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: "range",
@@ -76,6 +76,17 @@ export const dbSchema = appSchema({
       name: "visitation_logs",
       columns: [
         { name: "visit_date", type: "number" },
+        { name: "created_at", type: "number" },
+      ],
+    }),
+    tableSchema({
+      name: "review_logs",
+      columns: [
+        { name: "card_id", type: "string" },
+        { name: "grade", type: "number" },
+        { name: "elapsed_days", type: "number" },
+        { name: "scheduled_days", type: "number" },
+        { name: "reviewed_at", type: "number" },
         { name: "created_at", type: "number" },
       ],
     }),

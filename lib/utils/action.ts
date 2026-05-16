@@ -1,6 +1,6 @@
 import { apiFetch } from "./auth";
 
-const BASE_URL = "https://quran-be-59779bf2.fastapicloud.dev";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getAyahsByPages(
   startPage: number,
@@ -58,11 +58,11 @@ export async function saveRange(startRange: string, endRange: string) {
         timezone: timeZone,
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to save range: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (e) {
     console.error("Failed to save range:", e);

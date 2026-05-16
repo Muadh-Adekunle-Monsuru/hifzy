@@ -32,7 +32,7 @@ export function DashboardHeader() {
     const getUser = async () => {
       try {
         const response = await apiFetch(
-          "https://quran-be-59779bf2.fastapicloud.dev/auth/me",
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
         );
 
         if (response.ok) {

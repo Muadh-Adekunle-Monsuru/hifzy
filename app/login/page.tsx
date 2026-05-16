@@ -11,8 +11,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = () => {
-    window.location.href =
-      "https://quran-be-59779bf2.fastapicloud.dev/auth/login";
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
   };
 
   return (

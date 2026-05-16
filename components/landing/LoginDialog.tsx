@@ -19,8 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 export default function LoginDialog() {
   const handleLogin = () => {
-    window.location.href =
-      "https://quran-be-59779bf2.fastapicloud.dev/auth/login";
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
   };
   return (
     <div className="">

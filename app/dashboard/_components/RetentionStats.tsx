@@ -74,8 +74,16 @@ export function RetentionStats() {
             filledBars = 1;
           }
 
-          const label =
-            range.startSurahName || `Page ${range.startPage ?? "?"}`;
+          let label = "";
+          if (range.startSurahName) {
+            if (range.startSurahNumber === range.endSurahNumber) {
+              label = `${range.startSurahName} (${range.startAyahNumber}-${range.endAyahNumber})`;
+            } else {
+              label = `${range.startSurahName}:${range.startAyahNumber} - ${range.endSurahName}:${range.endAyahNumber}`;
+            }
+          } else {
+            label = `Pages ${range.startPage}-${range.endPage}`;
+          }
 
           results.push({ label, score, status, filledBars });
         }
@@ -135,7 +143,7 @@ export function RetentionStats() {
       <div className="space-y-2">
         {rows.map((row) => (
           <div key={row.label} className="flex items-center gap-2">
-            <span className="text-xs font-semibold w-24 truncate shrink-0">
+            <span className="text-xs font-semibold w-32 truncate shrink-0">
               {row.label}
             </span>
             <div className="flex-grow flex gap-1">

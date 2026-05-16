@@ -21,7 +21,7 @@ function CallbackContent() {
     const exchangeCode = async () => {
       try {
         const response = await fetch(
-          "https://quran-be-59779bf2.fastapicloud.dev/auth/exchange",
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/exchange`,
           {
             method: "POST",
             headers: {

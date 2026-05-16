@@ -5,7 +5,7 @@ export const MoonCard = () => {
     getMoonData();
 
   return (
-    <div className="md:col-span-6 border-2 border-neutral-800 bg-[#1c1b1b] p-6 flex flex-col justify-between min-h-[200px]">
+    <div className="md:col-span-6 lg:col-span-4 border-2 border-neutral-800 bg-[#1c1b1b] p-6 flex flex-col justify-between min-h-[200px]">
       {/* Top Labeling */}
       <div className="flex justify-between items-center border-b border-white/5 pb-2">
         <span className="text-[10px] font-bold text-zinc-500 font-mono uppercase tracking-[0.2em]">

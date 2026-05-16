@@ -17,7 +17,7 @@ export function HowItWorksSection() {
       </div>
       <MotionDiv
         variants={fadeIn}
-        className="flex flex-col md:flex-row gap-lg items-start relative"
+        className="flex flex-col md:flex-row gap-lg items-center justify-center relative space-y-5"
       >
         {/* Step 1 */}
         <div className="flex-1 flex flex-col items-center text-center">
@@ -32,10 +32,7 @@ export function HowItWorksSection() {
         <div className="hidden md:block absolute left-[33%] top-8 w-[5%] bg-primary/50 rounded-full h-1"></div>
 
         {/* Step 2 */}
-        <MotionDiv
-          variants={fadeIn}
-          className="flex-1 flex flex-col items-center text-center"
-        >
+        <div className="flex-1 flex flex-col items-center text-center">
           <div className="w-16 h-16 border-2 border-primary flex items-center justify-center mb-4 bg-background">
             <span className="text-headline-md text-primary">02</span>
           </div>
@@ -43,14 +40,11 @@ export function HowItWorksSection() {
           <p className="text-gray-300 font-light max-w-xs">
             See a prompt Ayah, record your recitation of the following verses.
           </p>
-        </MotionDiv>
+        </div>
         <div className="hidden md:block absolute left-[66%] top-8 w-[5%] bg-primary/50 rounded-full h-1"></div>
 
         {/* Step 3 */}
-        <MotionDiv
-          variants={fadeIn}
-          className="flex-1 flex flex-col items-center text-center"
-        >
+        <div className="flex-1 flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-primary text-on-primary flex items-center justify-center mb-4">
             <span className="text-headline-md text-black">03</span>
           </div>
@@ -59,7 +53,7 @@ export function HowItWorksSection() {
             Compare your audio with the reciter and grade your memory
             difficulty.
           </p>
-        </MotionDiv>
+        </div>
       </MotionDiv>
     </MotionSection>
   );

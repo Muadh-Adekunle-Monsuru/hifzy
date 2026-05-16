@@ -49,12 +49,14 @@ export function DailyTip() {
   const currentMotivation = dailyMotivations[motivationIndex];
 
   return (
-    <div className="md:col-span-6 border-2 border-neutral-800 bg-[#1c1b1b] p-5 flex flex-col justify-between">
+    <div className="md:col-span-6  lg:col-span-4 border-2 border-neutral-800 bg-[#1c1b1b] p-5 flex flex-col justify-between">
       <div>
         <h3 className="text-muted-foreground text-sm font-mono font-semibold mb-3 ">
           MOTIVATION
         </h3>
-        <p className="text-4xl italic font-thin">{currentMotivation.quote}</p>
+        <p className="text-4xl lg:text-3xl italic font-thin">
+          {currentMotivation.quote}
+        </p>
       </div>
     </div>
   );

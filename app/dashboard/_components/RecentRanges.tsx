@@ -42,12 +42,12 @@ export function RecentRanges() {
   }, []);
 
   return (
-    <div className="md:col-span-12 mt-7 grid grid-cols-6 gap-5">
+    <div className="md:col-span-12 my-7 grid grid-cols-6 gap-5 border-b border-gray-200 pb-10">
       {/* Header */}
       <div className="mb-4 col-span-6 flex items-center gap-2  border-b border-gray-200 pb-2">
         <History className="text-muted-foreground" />
         <h3 className="text-xl font-semibold uppercase text-muted-foreground">
-          Study Ranges
+          Study Sessions
         </h3>
       </div>
 

@@ -23,12 +23,39 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#131314",
 };
 
 export const metadata: Metadata = {
-  title: "Hifzy - Quranic Memorization Learning Platform",
+  title: "Hifzy - Quranic Memorization Platform",
   description:
     "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking. Offline-first app for Hifz students.",
+  openGraph: {
+    title: "Hifzy - Quranic Memorization Learning Platform",
+    description:
+      "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking. Offline-first app for Hifz students.",
+    url: "https://hifzy-srs.vercel.app",
+    siteName: "Hifzy",
+    images: [
+      {
+        url: "https://res.cloudinary.com/dzrkcnt5h/image/upload/v1778915295/Screenshot_from_2026-05-16_08-07-53_mhwpkt.png",
+        width: 1200,
+        height: 630,
+        alt: "Hifzy - Quranic Memorization Platform",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hifzy - Quranic Memorization Learning Platform",
+    description:
+      "Master your Quranic memorization with spaced repetition, audio recording, and progress tracking.",
+    images: [
+      "https://res.cloudinary.com/dzrkcnt5h/image/upload/v1778915295/Screenshot_from_2026-05-16_08-07-53_mhwpkt.png",
+    ],
+  },
   icons: {
     icon: [
       {

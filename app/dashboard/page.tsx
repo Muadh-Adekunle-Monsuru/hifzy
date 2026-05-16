@@ -15,6 +15,7 @@ import { MoonCard } from "./_components/MoonCard";
 import { RecentRanges } from "./_components/RecentRanges";
 import { StreakHeatmap } from "./_components/StreakHeatmap";
 import { DailyVerse } from "./_components/DailyVerse";
+import { RetentionStats } from "./_components/RetentionStats";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -52,6 +53,7 @@ export default function DashboardPage() {
             <CurrentStreak />
             <RecentRanges />
             <MoonCard />
+            <RetentionStats />
             <DailyTip />
             <DailyVerse />
           </div>

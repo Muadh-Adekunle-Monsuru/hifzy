@@ -93,7 +93,7 @@ export function RetentionStats() {
 
   if (loading) {
     return (
-      <div className="md:col-span-6 border-2 border-neutral-800 bg-[#1c1b1b] p-5 py-10">
+      <div className="md:col-span-6 lg:col-span-4 border-2 border-neutral-800 bg-[#1c1b1b] p-5 py-10">
         <h3 className="text-muted-foreground text-sm font-mono font-semibold text-outline mb-3">
           RETENTION BY RANGE
         </h3>
@@ -103,10 +103,7 @@ export function RetentionStats() {
               <span className="text-xs font-semibold w-10 bg-neutral-700 rounded h-4" />
               <div className="flex-grow flex gap-1">
                 {[0, 1, 2, 3, 4].map((j) => (
-                  <div
-                    key={j}
-                    className="h-4 w-4 bg-neutral-700 rounded"
-                  />
+                  <div key={j} className="h-4 w-4 bg-neutral-700 rounded" />
                 ))}
               </div>
               <span className="text-xs font-semibold bg-neutral-700 rounded h-4 w-12" />
@@ -119,7 +116,7 @@ export function RetentionStats() {
 
   if (rows.length === 0) {
     return (
-      <div className="md:col-span-6 border-2 border-neutral-800 bg-[#1c1b1b] p-5 py-10">
+      <div className="md:col-span-6 lg:col-span-4 border-2 border-neutral-800 bg-[#1c1b1b] p-5 py-10">
         <h3 className="text-muted-foreground text-sm font-mono font-semibold text-outline mb-3">
           RETENTION BY RANGE
         </h3>
@@ -131,7 +128,7 @@ export function RetentionStats() {
   }
 
   return (
-    <div className="md:col-span-6 border-2 border-neutral-800 bg-[#1c1b1b] p-5 py-10">
+    <div className="md:col-span-6 lg:col-span-4 border-2 border-neutral-800 bg-[#1c1b1b] p-5 py-10">
       <h3 className="text-muted-foreground text-sm font-mono font-semibold text-outline mb-3">
         RETENTION BY RANGE
       </h3>

@@ -90,13 +90,19 @@ export async function syncDatabase() {
       }
 
       // Step 2: Push Cards
-      // Collect card IDs belonging to skipped page-mode ranges so we can
-      // also exclude their review-log entries
+      // Track deleted range IDs to filter out their orphaned cards
+      const deletedRangeIds = new Set<string>(changes.range?.deleted || []);
+
+      // Collect card IDs belonging to skipped page-mode ranges or deleted ranges
+      // so we can also exclude their review-log entries
       const skippedCardIds = new Set<string>();
 
       const filteredCardsCreated = (changes.cards?.created || []).filter(
         (card: any) => {
-          if (skippedPageModeRangeIds.has(card.range_id)) {
+          if (
+            skippedPageModeRangeIds.has(card.range_id) ||
+            deletedRangeIds.has(card.range_id)
+          ) {
             skippedCardIds.add(card.id);
             return false;
           }
@@ -105,7 +111,10 @@ export async function syncDatabase() {
       );
       const filteredCardsUpdated = (changes.cards?.updated || []).filter(
         (card: any) => {
-          if (skippedPageModeRangeIds.has(card.range_id)) {
+          if (
+            skippedPageModeRangeIds.has(card.range_id) ||
+            deletedRangeIds.has(card.range_id)
+          ) {
             skippedCardIds.add(card.id);
             return false;
           }

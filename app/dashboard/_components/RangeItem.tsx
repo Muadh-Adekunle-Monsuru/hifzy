@@ -47,7 +47,7 @@ export default function RangeItem({ range }: RangeItemProps) {
 
   return (
     <Link
-      href={`/dashboard/study/${range.id}`}
+      href={`/dashboard/study?rangeId=${range.id}`}
       className="col-span-6 md:col-span-2 bento-card bg-[#1c1b1b] p-5 py-10 group cursor-pointer active:scale-95 transition-all block"
     >
       <div className="flex justify-between items-center mb-5">

@@ -94,9 +94,17 @@ export async function syncDatabase() {
       // also exclude their review-log entries
       const skippedCardIds = new Set<string>();
 
+      // Belt-and-suspenders: also skip cards whose parent range was deleted
+      // in this same sync batch (handles orphaned cards from before Fix 1)
+      const deletedRangeIds = new Set<string>(changes.range?.deleted || []);
+
       const filteredCardsCreated = (changes.cards?.created || []).filter(
         (card: any) => {
           if (skippedPageModeRangeIds.has(card.range_id)) {
+            skippedCardIds.add(card.id);
+            return false;
+          }
+          if (deletedRangeIds.has(card.range_id)) {
             skippedCardIds.add(card.id);
             return false;
           }
@@ -109,9 +117,19 @@ export async function syncDatabase() {
             skippedCardIds.add(card.id);
             return false;
           }
+          if (deletedRangeIds.has(card.range_id)) {
+            skippedCardIds.add(card.id);
+            return false;
+          }
           return true;
         },
       );
+
+      // Also skip review logs for cards that are being deleted in this batch,
+      // so the payload doesn't reference soft-deleted cards
+      for (const card of changes.cards?.deleted || []) {
+        skippedCardIds.add(typeof card === "string" ? card : card.id);
+      }
 
       const cardChanges: any = {
         decks: { created: [], updated: [], deleted: [] },

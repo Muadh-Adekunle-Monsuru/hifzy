@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -10,14 +11,18 @@ export function Footer() {
         </div>
       </div>
       <div className="flex gap-4 font-label-caps text-label-caps">
-        <a
+        <Link
           className="text-primary/50 hover:text-primary transition-colors underline"
-          href="https://drive.google.com/file/d/1QZZY_ZurzmU8XxdR88Hi7LtAYEBbQwzZ/view?usp=sharing"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/privacy-policy"
         >
           Privacy
-        </a>
+        </Link>
+        <Link
+          className="text-primary/50 hover:text-primary transition-colors underline"
+          href="/terms-and-conditions"
+        >
+          Terms
+        </Link>
         <a
           className="text-primary/50 hover:text-primary transition-colors underline"
           href="https://github.com/Muadh-Adekunle-Monsuru/hifzy/"
